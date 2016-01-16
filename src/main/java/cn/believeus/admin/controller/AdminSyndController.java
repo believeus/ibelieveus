@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import mydfs.storage.server.MydfsTrackerServer;
+
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +17,7 @@ import cn.believeus.PaginationUtil.Page;
 import cn.believeus.PaginationUtil.Pageable;
 import cn.believeus.PaginationUtil.PaginationUtil;
 import cn.believeus.model.Tsynd;
+import cn.believeus.model.Tsyndset;
 import cn.believeus.service.IService;
 import cn.believeus.service.MySQLService;
 
@@ -63,11 +64,29 @@ public class AdminSyndController {
 	@RequestMapping(value="/admin/synd/save")
 	public String save(Tsynd synd){
 		mysqlService.saveOrUpdate(synd);
+		String[] synds = synd.getSynd().split(",");
+		for (String syndname : synds) {
+			String code = DigestUtils.md5Hex(syndname);
+			Tsyndset syndset = (Tsyndset)mysqlService.findObject(Tsyndset.class,"code", code);
+			if(syndset!=null){
+				String refer = syndset.getRefer();
+				refer+="|"+synd.getId()+":"+synd.getTitle();
+				log.debug("refer:"+refer);
+				syndset.setRefer(refer);
+			}else {
+				syndset=new Tsyndset();
+				syndset.setRefer(synd.getId()+":"+synd.getTitle());
+				syndset.setCode(code);
+				syndset.setSynd(syndname);
+			}
+			log.info("refer:"+syndset.getRefer());
+			mysqlService.saveOrUpdate(syndset);
+		} 
 		return "redirect:/admin/synd/list.jhtml";
 	}
 	
-	@RequestMapping(value="/admin/synd/edit")
-	public String edit(Integer myNewId, HttpServletRequest request){
+	@RequestMapping(value="/admin/synd/editView")
+	public String editView(Integer id){
 		return "/WEB-INF/back/synd/edit.jsp";
 	}
 	
@@ -76,9 +95,17 @@ public class AdminSyndController {
 	 * @return
 	 */
 	@RequestMapping(value="/admin/synd/delete")
-	public @ResponseBody String delete(Integer[] ids){
-		List<Integer> list = Arrays.asList(ids); 
-		return "{\"type\":\"success\"}";
+	public  String delete(Integer id){
+		Tsynd synd = (Tsynd)mysqlService.findObject(Tsynd.class, id);
+		String value=synd.getTitle();
+		List<Tsyndset> syndsetList = (List<Tsyndset>) ((MySQLService)mysqlService).findObjecList(Tsyndset.class, "refer", value);
+		for (Tsyndset tsyndset : syndsetList) {
+			String refer = tsyndset.getRefer();
+			refer=refer.replaceAll("[0-9]+", "");
+			tsyndset.setRefer(refer);
+			mysqlService.saveOrUpdate(tsyndset);
+		}
+		return "/admin/synd/list.jhtml";
 	}
 	
 	

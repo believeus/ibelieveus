@@ -9,6 +9,7 @@ import javax.persistence.MappedSuperclass;
 import org.hibernate.CallbackException;
 import org.hibernate.Session;
 import org.hibernate.classic.Lifecycle;
+import org.hibernate.search.annotations.DocumentId;
 
 @MappedSuperclass
 public class TbaseEntity implements Serializable,Lifecycle {
@@ -25,6 +26,7 @@ public class TbaseEntity implements Serializable,Lifecycle {
 	// Oracle: @GeneratedValue(strategy = GenerationType.AUTO, generator =
 	// "sequenceGenerator")
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@DocumentId
 	public int getId() {
 		return id;
 	}

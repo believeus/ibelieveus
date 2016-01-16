@@ -2,7 +2,18 @@ package cn.believeus.service;
 
 import java.util.List;
 import javax.annotation.Resource;
+
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.util.Version;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.search.FullTextQuery;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.Search;
 import org.springframework.stereotype.Service;
+import org.wltea.analyzer.lucene.IKAnalyzer;
+
 import cn.believeus.PaginationUtil.Page;
 import cn.believeus.PaginationUtil.Pageable;
 import cn.believeus.dao.IBaseDao;
@@ -12,7 +23,8 @@ import cn.believeus.dao.MySQLDao;
 public class MySQLService implements IService{
 	@Resource
 	private IBaseDao mysqlDao;
-	
+	@Resource
+	private SessionFactory sessionFactory;
 	
 	@Override
 	public void saveOrUpdate(Object object) {
@@ -83,7 +95,21 @@ public class MySQLService implements IService{
 			Object value, int num) {
 		return ((MySQLDao)mysqlDao).findObjectList(clazz, property, value, num);
 	}
-
+	
+	public List<?> findObjecList(Class<?> clazz, String property, String value) {
+		Session session = sessionFactory.openSession();
+		FullTextSession fullTextSession = Search.getFullTextSession(session);
+		QueryParser queryParser = new QueryParser(Version.LUCENE_36, property,new IKAnalyzer(true));
+		Query luceneqQuery = null;
+		try {
+			luceneqQuery = queryParser.parse(value);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(luceneqQuery, clazz);
+		return fullTextQuery.list();
+	}
+	
 	public List<?> findObjectList(String hql, Integer num) {
 		return ((MySQLDao)mysqlDao).findObjectList(hql,num);
 	}

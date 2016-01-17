@@ -1,6 +1,8 @@
 package cn.believeus.admin.controller;
 
 import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,7 +11,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.portlet.ModelAndView;
 
 import cn.believeus.PaginationUtil.Page;
 import cn.believeus.PaginationUtil.Pageable;
@@ -27,11 +32,16 @@ public class AdminSyndController {
 	
 	@Resource
 	private IService mysqlService;
-
-	/**
-	 * 新闻列表
-	 * @return
-	 */
+	
+	@ModelAttribute
+	public void getSynd(HttpServletRequest request,@RequestParam(value="id")Integer id,Map<String, Object> map){
+		String uri = request.getRequestURI();
+		if(uri.contains("/admin/synd/update")){
+			Tsynd synd = (Tsynd)mysqlService.findObject(Tsynd.class, id);
+			map.put("synd", synd);
+		}
+	}
+	
 	@RequestMapping(value="/admin/synd/list")
 	public String list(HttpServletRequest request){
 		String pageNumber = request.getParameter("pageNumber");
@@ -68,12 +78,13 @@ public class AdminSyndController {
 			Tsyndset syndset = (Tsyndset)mysqlService.findObject(Tsyndset.class,"code", code);
 			if(syndset!=null){
 				String refer = syndset.getRefer();
-				refer+="|"+synd.getId()+":"+synd.getTitle();
+				refer+="["+synd.getId()+":"+synd.getTitle()+"]";
 				log.debug("refer:"+refer);
 				syndset.setRefer(refer);
 			}else {
 				syndset=new Tsyndset();
-				syndset.setRefer(synd.getId()+":"+synd.getTitle());
+				String refer=synd.getId()+":"+synd.getTitle();
+				syndset.setRefer("["+refer+"]");
 				syndset.setCode(code);
 				syndset.setSynd(syndname);
 			}
@@ -84,14 +95,18 @@ public class AdminSyndController {
 	}
 	
 	@RequestMapping(value="/admin/synd/editView")
-	public String editView(Integer id){
-		return "/WEB-INF/back/synd/edit.jsp";
+	public ModelAndView editView(Integer id){
+		Tsynd synd=(Tsynd)mysqlService.findObject(Tsynd.class, id);
+		ModelAndView modelView=new ModelAndView();
+		modelView.setViewName("/WEB-INF/back/synd/editView.jsp");
+		return "";
+	}
+	@RequestMapping(value="/admin/synd/update")
+	public String update(@ModelAttribute(value="synd") Tsynd synd){
+		mysqlService.saveOrUpdate(synd);
+		return "redirect:/admin/synd/list.jhtml";
 	}
 	
-	/**
-	 * 新闻删除
-	 * @return
-	 */
 	@RequestMapping(value="/admin/synd/delete")
 	public  String delete(Integer id){
 		Tsynd synd = (Tsynd)mysqlService.findObject(Tsynd.class, id);
@@ -102,14 +117,7 @@ public class AdminSyndController {
 		for (Tsyndset tsyndset : syndsetList) {
 			String refer = tsyndset.getRefer();
 			log.info("begin refer:"+refer);
-			System.out.println(refer);
-			if (refer.contains("|" + id + ":" + value + "|")) {
-				refer = refer.replace("|" + id + ":" + value + "|", "");
-			} else if (refer.contains(id + ":" + value + "|")) {
-				refer = refer.replace(id + ":" + value + "|", "");
-			} else if (refer.contains("|" + id + ":" + value)) {
-				refer = refer.replace("|" + id + ":" + value, "");
-			}
+			refer = refer.replace("[" + id + ":" + value + "]", "");
 			log.info("end refer:"+refer);
 			tsyndset.setRefer(refer);
 			mysqlService.saveOrUpdate(tsyndset);

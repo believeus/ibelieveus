@@ -10,25 +10,29 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-resources-plugin</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
 		</dependency>
-	   <dependency>
-                <groupId>org.mybatis</groupId>
-                <artifactId>mybatis</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>org.mybatis</groupId>
-                <artifactId>mybatis-spring</artifactId>
-            </dependency>
 		<dependency>
-             <groupId>org.mongodb</groupId>
-             <artifactId>mongo-java-driver</artifactId>
-         </dependency>
-		<dependency>  
-        	<groupId>org.springframework.data</groupId>  
-        	<artifactId>spring-data-mongodb</artifactId>
-        	<exclusions>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongo-java-driver</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-mongodb</artifactId>
+			<exclusions>
 				<exclusion>
 					<groupId>org.springframework</groupId>
 					<artifactId>spring-tx</artifactId>
@@ -38,7 +42,7 @@
 					<artifactId>spring-expression</artifactId>
 				</exclusion>
 			</exclusions>
-    	</dependency>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-core</artifactId>
@@ -357,12 +361,10 @@
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-redis</artifactId>
-			<version>1.6.0.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.4</version>
 		</dependency>
 	</dependencies>
 
@@ -674,36 +676,43 @@
 				<artifactId>activemq-pool</artifactId>
 				<version>5.7.0</version>
 			</dependency>
-		    <!-- mongodb spring -->  
-    		<dependency>  
-        		<groupId>org.springframework.data</groupId>  
-        		<artifactId>spring-data-mongodb</artifactId>  
-        		<version>1.3.1.RELEASE</version>  
-    		</dependency>
+			<!-- mongodb spring -->
 			<dependency>
-                <groupId>org.mongodb</groupId>
-                <artifactId>mongo-java-driver</artifactId>
-                <version>2.11.0</version>
-            </dependency>
-               <dependency>
-                <groupId>org.mybatis</groupId>
-                <artifactId>mybatis</artifactId>
-                <version>3.2.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mybatis</groupId>
-                <artifactId>mybatis-spring</artifactId>
-                <version>1.2.0</version>
-            </dependency>
-            <dependency>
+				<groupId>org.springframework.data</groupId>
+				<artifactId>spring-data-mongodb</artifactId>
+				<version>1.3.1.RELEASE</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mongodb</groupId>
+				<artifactId>mongo-java-driver</artifactId>
+				<version>2.11.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mybatis</groupId>
+				<artifactId>mybatis</artifactId>
+				<version>3.2.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mybatis</groupId>
+				<artifactId>mybatis-spring</artifactId>
+				<version>1.2.0</version>
+			</dependency>
+			<dependency>
 				<groupId>redis.clients</groupId>
 				<artifactId>jedis</artifactId>
 				<version>2.6.0</version>
-		</dependency>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.5</version>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 	<!--End Name:wuqiwei Date:2013-12-20 AddReason:当多个个jar包分别有依赖不同版本的jar时，就使用该配置的jar -->
 	<build>
+
 		<!--Begin Name:wuqiwei Date:2013-12-15 17:05:32 AddReason:myeclipse 自动编译存放的目录 -->
 		<outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
 		<!--End Name:wuqiwei Date:2013-12-15 17:05:32 AddReason:myeclipse 自动编译存放的目录 -->

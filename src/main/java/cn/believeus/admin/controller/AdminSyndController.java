@@ -1,6 +1,5 @@
 package cn.believeus.admin.controller;
 
-import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -11,7 +10,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.believeus.PaginationUtil.Page;
 import cn.believeus.PaginationUtil.Pageable;
@@ -98,13 +96,25 @@ public class AdminSyndController {
 	public  String delete(Integer id){
 		Tsynd synd = (Tsynd)mysqlService.findObject(Tsynd.class, id);
 		String value=synd.getTitle();
-		List<Tsyndset> syndsetList = (List<Tsyndset>) ((MySQLService)mysqlService).findObjecList(Tsyndset.class, "refer", value);
+		@SuppressWarnings("unchecked")  
+		List<Tsyndset> syndsetList = (List<Tsyndset>) ((MySQLService) mysqlService).findObjecList(Tsyndset.class, "refer", value);
+		log.info("hibernate search:"+syndsetList.size());
 		for (Tsyndset tsyndset : syndsetList) {
 			String refer = tsyndset.getRefer();
-			refer=refer.replaceAll("[0-9]+", "");
+			log.info("begin refer:"+refer);
+			System.out.println(refer);
+			if (refer.contains("|" + id + ":" + value + "|")) {
+				refer = refer.replace("|" + id + ":" + value + "|", "");
+			} else if (refer.contains(id + ":" + value + "|")) {
+				refer = refer.replace(id + ":" + value + "|", "");
+			} else if (refer.contains("|" + id + ":" + value)) {
+				refer = refer.replace("|" + id + ":" + value, "");
+			}
+			log.info("end refer:"+refer);
 			tsyndset.setRefer(refer);
 			mysqlService.saveOrUpdate(tsyndset);
 		}
+		mysqlService.delete(synd);
 		return "/admin/synd/list.jhtml";
 	}
 	

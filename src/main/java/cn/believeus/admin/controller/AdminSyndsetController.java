@@ -58,7 +58,7 @@ public class AdminSyndsetController {
 		ModelAndView modelView=new ModelAndView();
 		Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class, id);
 		modelView.addObject("syndset", syndset);
-		modelView.setViewName("/WEB-INF/back/syndset/edit.jsp");
+		modelView.setViewName("/WEB-INF/back/syndset/editView.jsp");
 		return modelView;
 	}
 	

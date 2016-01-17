@@ -14,7 +14,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.portlet.ModelAndView;
+import org.springframework.web.servlet.ModelAndView;
 
 import cn.believeus.PaginationUtil.Page;
 import cn.believeus.PaginationUtil.Pageable;
@@ -98,8 +98,9 @@ public class AdminSyndController {
 	public ModelAndView editView(Integer id){
 		Tsynd synd=(Tsynd)mysqlService.findObject(Tsynd.class, id);
 		ModelAndView modelView=new ModelAndView();
+		modelView.addObject("synd", synd);
 		modelView.setViewName("/WEB-INF/back/synd/editView.jsp");
-		return "";
+		return modelView;
 	}
 	@RequestMapping(value="/admin/synd/update")
 	public String update(@ModelAttribute(value="synd") Tsynd synd){

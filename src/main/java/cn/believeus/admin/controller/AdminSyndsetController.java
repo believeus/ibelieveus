@@ -58,8 +58,21 @@ public class AdminSyndsetController {
 		ModelAndView modelView=new ModelAndView();
 		Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class, id);
 		modelView.addObject("syndset", syndset);
+		String[] refers=syndset.getRefer().replace("[", "").split("\\]");
+		modelView.addObject("refers", refers);
 		modelView.setViewName("/WEB-INF/back/syndset/editView.jsp");
 		return modelView;
+	}
+	
+	@RequestMapping("/admin/syndset/delete")
+	public String delete(Integer id,String refers){
+		return "";
+	}
+	
+	public String delete(Integer id){
+		Tsyndset syndset = (Tsyndset)mysqlService.findObject(Tsyndset.class, id);
+		syndset.getRefer().split("\\s");
+		return "";
 	}
 	
 	@RequestMapping("/admin/syndset/update")

@@ -1,5 +1,7 @@
 package cn.believeus.admin.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -7,13 +9,14 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import cn.believeus.PaginationUtil.Page;
@@ -34,7 +37,7 @@ public class AdminSyndController {
 	private IService mysqlService;
 	
 	@ModelAttribute
-	public void getSynd(HttpServletRequest request,@RequestParam(value="id")Integer id,Map<String, Object> map){
+	public void getSynd(HttpServletRequest request,@RequestParam(value="id",required=false)Integer id,Map<String, Object> map){
 		String uri = request.getRequestURI();
 		if(uri.contains("/admin/synd/update")){
 			Tsynd synd = (Tsynd)mysqlService.findObject(Tsynd.class, id);
@@ -60,10 +63,6 @@ public class AdminSyndController {
 		return "/WEB-INF/back/synd/list.jsp";
 	}
 	
-	/**
-	 * 新闻添加
-	 * @return
-	 */
 	@RequestMapping(value="/admin/synd/addView")
 	public String addView(){
 		return "/WEB-INF/back/synd/addView.jsp";
@@ -74,17 +73,17 @@ public class AdminSyndController {
 		mysqlService.saveOrUpdate(synd);
 		String[] synds = synd.getSynd().split(",");
 		for (String syndname : synds) {
-			String code = DigestUtils.md5Hex(syndname);
+			String code = DigestUtils.md5Hex(syndname.trim());
 			Tsyndset syndset = (Tsyndset)mysqlService.findObject(Tsyndset.class,"code", code);
 			if(syndset!=null){
 				String refer = syndset.getRefer();
-				refer+="["+synd.getId()+":"+synd.getTitle()+"]";
+				refer+="["+synd.getId()+":"+synd.getTitle()+"] ";
 				log.debug("refer:"+refer);
 				syndset.setRefer(refer);
 			}else {
 				syndset=new Tsyndset();
 				String refer=synd.getId()+":"+synd.getTitle();
-				syndset.setRefer("["+refer+"]");
+				syndset.setRefer("["+refer+"] ");
 				syndset.setCode(code);
 				syndset.setSynd(syndname);
 			}
@@ -105,13 +104,25 @@ public class AdminSyndController {
 	@RequestMapping(value="/admin/synd/update")
 	public String update(@ModelAttribute(value="synd") Tsynd synd){
 		mysqlService.saveOrUpdate(synd);
+		for(String syndname :synd.getSynd().split(",")){
+			String code=DigestUtils.md5Hex(syndname.trim());
+			Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class,"code", code);
+			if(syndset==null){
+				syndset=new Tsyndset();
+				String refer=synd.getId()+":"+synd.getTitle();
+				syndset.setRefer("["+refer+"]");
+				syndset.setCode(code);
+				syndset.setSynd(syndname);
+				mysqlService.saveOrUpdate(syndset);
+			}
+		}
 		return "redirect:/admin/synd/list.jhtml";
 	}
 	
 	@RequestMapping(value="/admin/synd/delete")
 	public  String delete(Integer id){
 		Tsynd synd = (Tsynd)mysqlService.findObject(Tsynd.class, id);
-		String value=synd.getTitle();
+		String value=synd.getTitle().trim();
 		@SuppressWarnings("unchecked")  
 		List<Tsyndset> syndsetList = (List<Tsyndset>) ((MySQLService) mysqlService).findObjecList(Tsyndset.class, "refer", value);
 		log.info("hibernate search:"+syndsetList.size());
@@ -125,7 +136,20 @@ public class AdminSyndController {
 		}
 		mysqlService.delete(synd);
 		return "/admin/synd/list.jhtml";
-	}
+	};
 	
+	@RequestMapping("/autocomplete/getSynd")
+	public @ResponseBody String getSynd(@RequestParam(value="keywords")String keywords) {
+		StringBuilder sb=new StringBuilder();
+		if(StringUtils.isNotEmpty(keywords)){
+			System.out.println(keywords);
+			@SuppressWarnings("unchecked")
+			List<Tsyndset> syndset = (List<Tsyndset>) ((MySQLService)mysqlService).findObjecList(Tsyndset.class, "synd", keywords);
+			for (Tsyndset synd : syndset) {
+				sb.append("<span>").append(synd.getSynd()).append("</span><br>");
+			}
+		}
+		return sb.toString();
+	}
 	
 }

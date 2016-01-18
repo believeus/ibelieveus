@@ -35,7 +35,7 @@ public class Tsyndset extends TbaseEntity {
 	public void setCode(String code) {
 		this.code = code;
 	}
-
+	@Field(store=Store.NO,index=Index.TOKENIZED)
 	public String getSynd() {
 		return synd;
 	}

@@ -94,5 +94,43 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</tr>
 		</table>
 	</form>
-  </body>
+	<hr>
+	<form action="" method="post">
+		<input type="hidden"  name="id" value="${syndset.id }"/>
+		<table class="input">
+			<tr>
+				<th>病症:</th>
+				<td>${syndset.synd}</td>
+			</tr>
+			<tr>
+				<th>可能病证</th>
+				<td>
+					<c:forEach items="${refers}" var="refer" varStatus="status" >
+					 <input type="checkbox" class="checkout" name="refers" value="${refer}"/>${refer}
+					</c:forEach>
+				<td>
+			</tr>
+		  <tr>
+		  	<th></th>
+		  	<td><input type="submit" class="button" value="删除" /></td>
+		  </tr>
+		</table>
+	</form>
+	<hr>
+	<form action="" method="post">
+		<input type="hidden"  name="id" value="${syndset.id }"/>
+		<table class="input">
+			<tr>
+				<th>病症</th>
+				<td>
+					 <input type="checkbox" class="checkout" name="id" value="${syndset.id }"/>${syndset.synd}
+				<td>
+			</tr>
+		  <tr>
+		  	<th></th>
+		  	<td><input type="submit" class="button" value="删除" />(备注:所有存在"${syndset.synd}"症状的证都会被删除)</td>
+		  </tr>
+		</table>
+	</form>
+</body>
 </html>

@@ -8,80 +8,58 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
   <head>
     <base href="<%=basePath%>">
-    
-    <title>后台登录</title>
-    
-	<meta http-equiv="pragma" content="no-cache">
-	<meta http-equiv="cache-control" content="no-cache">
-	<meta http-equiv="expires" content="0">    
-	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
-	<meta http-equiv="description" content="This is my page">
-	<!--
-	<link rel="stylesheet" type="text/css" href="styles.css">
-	-->
-	<style type="text/css">
-		body {
-			margin-left: 0px;
-			margin-top: 0px;
-			margin-right: 0px;
-			margin-bottom: 0px;
-			background-color: #016aa9;
-			overflow:hidden;
-		}
-		.STYLE1 {
-			color: #000000;
-			font-size: 12px;
-		}
-	</style>
-  </head>
-  
-  <body>
-    <!-- Begin Name:wuqiwei 此处必须加：不加验证之后就不能表单提交了,所以如果已经验证直接跳转到/admin/manager.jhtml页面 -->
+    <title></title>
+    <link href="static/public/css/alogin.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<!-- Begin Name:wuqiwei 此处必须加：不加验证之后就不能表单提交了,所以如果已经验证直接跳转到/admin/manager.jhtml页面 -->
      <shiro:authenticated>
       <script type="text/javascript">
         window.location.href ="/admin/manager.jhtml";
       </script>
 	</shiro:authenticated>
 	<!-- End Name:wuqiwei 此处必须加：不加验证之后就不能表单提交了,所以如果已经验证直接跳转到/admin/manager.jhtml页面 -->
-	
-  	<form action="/admin/login.jhtml" method="post">
-    <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
-	  <tr>
-	    <td><table width="962" border="0" align="center" cellpadding="0" cellspacing="0">
-	      <tr>
-	        <td height="235" background="/static/public/images/login_03.gif">&nbsp;</td>
-	      </tr>
-	      <tr>
-	        <td height="53"><table width="100%" border="0" cellspacing="0" cellpadding="0">
-	          <tr>
-	            <td width="394" height="53" background="/static/public/images/login_05.gif">&nbsp;</td>
-	            <td width="206" background="/static/public/images/login_06.gif"><table width="100%" border="0" cellspacing="0" cellpadding="0">
-	              <tr>
-	                <td width="16%" height="25"><div align="right"><span class="STYLE1">用户</span></div></td>
-	                <td width="57%" height="25"><div align="center">
-	                  <input type="text" name="username" style="width:105px; height:17px; background-color:#292929; border:solid 1px #7dbad7; font-size:12px; color:#6cd0ff">
-	                </div></td>
-	                <td width="27%" height="25">&nbsp;</td>
-	              </tr>
-	              <tr>
-	                <td height="25"><div align="right"><span class="STYLE1">密码</span></div></td>
-	                <td height="25"><div align="center">
-	                  <input type="password" name="password" style="width:105px; height:17px; background-color:#292929; border:solid 1px #7dbad7; font-size:12px; color:#6cd0ff">
-	                </div></td>
-	               <!--  <td height="25"><div align="left"><img src="/static/public/images/dl.gif" width="49" height="18" border="0"></div></td> -->
-	              	<td><input type="submit" value="提交"/></td>
-	              </tr>
-	            </table></td>
-	            <td width="362" background="/static/public/images/login_07.gif">&nbsp;</td>
-	          </tr>
-	        </table></td>
-	      </tr>
-	      <tr>
-	        <td height="213" background="/static/public/images/login_08.gif">&nbsp;</td>
-	      </tr>
-	    </table></td>
-	  </tr>
-	</table>
-	</form>
-  </body>
+    <form  action="/admin/login.jhtml" method="post" >
+    <div class="Main">
+        <ul>
+            <li class="top"></li>
+            <li class="top2"></li>
+            <li class="topA"></li>
+            <li class="topB">
+              <span>
+                <!-- <img src="static/public/images/login/logo.gif" alt="" style="" /> -->
+             </span>
+            </li>
+            <li class="topC"></li>
+            <li class="topD">
+                <ul class="login" style="margin-top: 55px;">
+                    <li>
+                    	<span class="left">用户名:</span> 
+                    	<span style="left">
+                        	<input id="Text1" type="text" name="username" class="txt" />  
+                    	</span>
+                    </li>
+                    <li>
+                    	<span class="left">密 码:</span> <span style="left">
+                         	<input id="Text2" type="text" name="password" class="txt" />  
+                    	</span>
+                    </li>
+                </ul>
+            </li>
+            <li class="topE"></li>
+            <li class="middle_A"></li>
+            <li class="middle_B"></li>
+            <li class="middle_C">
+            
+            <span class="btn">
+                <input type="image"  src="static/public/images/login/btnlogin.gif" />
+             </span>
+            </li>
+            <li class="middle_D"></li>
+            <li class="bottom_A"></li>
+            <li class="bottom_B"></li>
+        </ul>
+    </div>
+    </form>
+</body>
 </html>

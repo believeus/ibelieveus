@@ -1,7 +1,12 @@
 package cn.believeus.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
@@ -27,6 +32,7 @@ public class Tsyndset extends TbaseEntity {
 	private String refer;
 	// 病症描述
 	private String description;
+	private List<String> reflist=new ArrayList<String>();
 
 	public String getCode() {
 		return code;
@@ -59,5 +65,16 @@ public class Tsyndset extends TbaseEntity {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	@Transient
+	public List<String> getReflist() {
+		reflist = Arrays.asList(refer.split("\\s"));
+		return reflist;
+	}
+
+	public void setReflist(List<String> reflist) {
+		this.reflist = reflist;
+	}
+	
 
 }

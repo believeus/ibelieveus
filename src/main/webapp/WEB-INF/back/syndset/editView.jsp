@@ -13,9 +13,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<meta name="copyright" content="believeus" />
 	<link href="/static/public/css/common_s.css" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="/static/public/js/jquery.js"></script>
-	<script type="text/javascript" src="/static/public/js/jquery.validate.js"></script>
-	<script type="text/javascript" src="/static/public/js/admin/ueditor1_2_6_2/ueditor.config.js"></script>
-	<script type="text/javascript" src="/static/public/js/admin/ueditor1_2_6_2/ueditor.all.js"></script>
 	<script type="text/javascript" src="/static/public/js/common.js"></script>
 	<script type="text/javascript" src="/static/public/js/input.js"></script>
 	<style type="text/css">
@@ -26,32 +23,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script type="text/javascript">
 	$().ready(function() {
 	
-		var editor = new UE.ui.Editor();
-	    editor.render('editor');
-	    editor.addListener('contentchange',function(){
-	        this.sync();
-	        $('textarea').valid();
-	    });
-	
-	    var editor1 = new UE.ui.Editor();
-	    editor1.render('editor1');
-	    editor1.addListener('contentchange',function(){
-	        this.sync();
-	        $('#editor1').valid();
-	    });
-	    
-		var $inputForm = $("#inputForm");
 		
-		// 表单验证
-		$inputForm.validate({
-			rules: {
-				title: "required",
-				content: "required",
-				entitle: "required",
-				encontent: "required",
-				type:"required"
-			}
-		});
 		
 		
 	});
@@ -89,13 +61,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</th>
 				<td colspan="3">
 					<input type="submit" class="button" value="确定" />
-					<input type="button" class="button" value="返回" onclick="javascript:window.location.href='/admin/syndset/list.jhtml';"/>
+					<input type="button" class="button" value="返回" onclick="javascript:window.location.href='/admin/syndset/list.jhtml'"/>
 				</td>
 			</tr>
 		</table>
 	</form>
+	<c:if test="${!empty syndset.reflist}">
 	<hr>
-	<form action="" method="post">
+		<form action="/admin/syndset/deleteRef.jhtml" method="post">
 		<input type="hidden"  name="id" value="${syndset.id }"/>
 		<table class="input">
 			<tr>
@@ -105,32 +78,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<tr>
 				<th>可能病证</th>
 				<td>
-					<c:forEach items="${refers}" var="refer" varStatus="status" >
-					 <input type="checkbox" class="checkout" name="refers" value="${refer}"/>${refer}
+					<c:forEach items="${syndset.reflist}" var="refer" varStatus="status" >
+						<c:if test="${!empty refer}">
+							<c:choose>
+								<c:when test="${status.index % 5==4}"><input type="checkbox" class="checkout" name="refers" value="${refer}"/>${refer}<br></c:when>
+								<c:otherwise><input type="checkbox" class="checkout" name="refers" value="${refer}"/>${refer}</c:otherwise>
+							</c:choose>
+						</c:if>
 					</c:forEach>
 				<td>
 			</tr>
 		  <tr>
 		  	<th></th>
-		  	<td><input type="submit" class="button" value="删除" /></td>
+		  	<td><input type="submit" class="button" value="删除" /><input type="button" class="button" value="返回" onclick="javascript:window.location.href='/admin/syndset/list.jhtml'"/></td>
 		  </tr>
 		</table>
 	</form>
-	<hr>
-	<form action="" method="post">
-		<input type="hidden"  name="id" value="${syndset.id }"/>
-		<table class="input">
-			<tr>
-				<th>病症</th>
-				<td>
-					 <input type="checkbox" class="checkout" name="id" value="${syndset.id }"/>${syndset.synd}
-				<td>
-			</tr>
-		  <tr>
-		  	<th></th>
-		  	<td><input type="submit" class="button" value="删除" />(备注:所有存在"${syndset.synd}"症状的证都会被删除)</td>
-		  </tr>
-		</table>
-	</form>
+	</c:if>
+	
+	
 </body>
 </html>

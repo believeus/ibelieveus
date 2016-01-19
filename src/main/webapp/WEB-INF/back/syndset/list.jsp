@@ -74,6 +74,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</td>
 					<td>
 						<a href="/admin/syndset/editView.jhtml?id=${syndset.id}">[编辑]</a>
+						<a href="/admin/syndset/delete.jhtml?id=${syndset.id}">[删除]</a>
 					</td>
 				</tr>
 			</c:forEach>

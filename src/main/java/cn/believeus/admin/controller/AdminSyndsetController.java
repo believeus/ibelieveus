@@ -1,12 +1,14 @@
 package cn.believeus.admin.controller;
 
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import cn.believeus.PaginationUtil.Page;
 import cn.believeus.PaginationUtil.Pageable;
 import cn.believeus.PaginationUtil.PaginationUtil;
+import cn.believeus.model.Tsynd;
 import cn.believeus.model.Tsyndset;
 import cn.believeus.service.IService;
 import cn.believeus.service.MySQLService;
@@ -58,21 +61,53 @@ public class AdminSyndsetController {
 		ModelAndView modelView=new ModelAndView();
 		Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class, id);
 		modelView.addObject("syndset", syndset);
-		String[] refers=syndset.getRefer().replace("[", "").split("\\]");
-		modelView.addObject("refers", refers);
 		modelView.setViewName("/WEB-INF/back/syndset/editView.jsp");
 		return modelView;
 	}
 	
-	@RequestMapping("/admin/syndset/delete")
-	public String delete(Integer id,String refers){
-		return "";
+	@RequestMapping("/admin/syndset/deleteRef")
+	public String delete(Integer id,String[] refers){
+		if(refers!=null && refers.length>0){
+			Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class, id);
+			for (String refer : refers) {
+				Matcher matcher = Pattern.compile("\\d+").matcher(refer);
+				if(matcher.find()){
+					Tsynd synd = (Tsynd)mysqlService.findObject(Tsynd.class, Integer.parseInt(matcher.group()));
+					if(synd!=null){
+						if(StringUtils.isNotEmpty(synd.getSynd())){
+							synd.setSynd(synd.getSynd().replace(syndset.getSynd(), ""));
+							mysqlService.saveOrUpdate(synd);
+						}
+					}
+				}  
+				
+				if(syndset!=null){
+					if(StringUtils.isNotEmpty(syndset.getRefer())){
+						syndset.setRefer(syndset.getRefer().replace(refer, ""));
+					}
+				}
+			}
+			mysqlService.saveOrUpdate(syndset);
+		}
+		return "redirect:/admin/syndset/editView.jhtml?id="+id;
 	}
 	
+	@RequestMapping("/admin/syndset/delete")
 	public String delete(Integer id){
 		Tsyndset syndset = (Tsyndset)mysqlService.findObject(Tsyndset.class, id);
-		syndset.getRefer().split("\\s");
-		return "";
+		String refer=syndset.getRefer();
+		if(StringUtils.isNotEmpty(refer)){
+			for(String ref:refer.split("\\s")){
+				Matcher matcher = Pattern.compile("\\d+").matcher(ref);
+				while(matcher.find()){
+					Tsynd synd=(Tsynd)mysqlService.findObject(Tsynd.class, Integer.parseInt(matcher.group()));
+					synd.setSynd(synd.getSynd().replace(syndset.getSynd(), ""));
+					mysqlService.saveOrUpdate(synd);
+				}
+			}
+		}
+		mysqlService.delete(syndset);
+		return "redirect:/admin/syndset/list.jhtml";
 	}
 	
 	@RequestMapping("/admin/syndset/update")

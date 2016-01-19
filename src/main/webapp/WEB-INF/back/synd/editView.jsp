@@ -53,7 +53,7 @@ table.input th {
 			 $("#add_synd").click(function(){
 				 var delTr="$('#trId"+tr_index+"').remove()";
 			 	 var trHTML = "<tr id=trId"+tr_index+"><th>临床症状:</th><td><input type='text' name='synd' onkeyup='auto(this)' class='text' style='margin-right:8px;' maxlength='200' /><a href='javascript:void(0);' onclick="+delTr+" style='color: red;'>X</a><div class='list_box'></div></td></tr>";
-				 $("#trId0").after(trHTML);
+				 $("#tr_begin").after(trHTML);
 				 tr_index++;
 			 });
 			 
@@ -100,7 +100,7 @@ table.input th {
 	<form id="inputForm" action="/admin/synd/update.jhtml" method="post">
 	  <input type="hidden" name="id" value="${synd.id}"/>
 		<table class="input" id="detal_tab">
-			<tr>
+			<tr id="tr_begin">
 				<th>
 					病证名:
 				</th>
@@ -110,7 +110,7 @@ table.input th {
 				</td>
 			</tr>
 			<c:forEach items="${synd.synd}" var="strSynd" varStatus="status">
-				<tr id="trId${status.index}"> 
+				<tr id="trId${status.index+1}"> 
 			 	<th>
 					临床症状:
 				</th>

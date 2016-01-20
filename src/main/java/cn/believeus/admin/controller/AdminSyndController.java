@@ -1,7 +1,11 @@
 package cn.believeus.admin.controller;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -69,7 +73,7 @@ public class AdminSyndController {
 	@RequestMapping(value="/admin/synd/save")
 	public String save(Tsynd synd){
 		mysqlService.saveOrUpdate(synd);
-		String[] synds = synd.getSynd().split(",");
+		String[] synds = synd.getSynd().split("\\s+");
 		for (String syndname : synds) {
 			String code = DigestUtils.md5Hex(syndname.trim());
 			Tsyndset syndset = (Tsyndset)mysqlService.findObject(Tsyndset.class,"code", code);
@@ -101,17 +105,29 @@ public class AdminSyndController {
 	}
 	@RequestMapping(value="/admin/synd/update")
 	public String update(@ModelAttribute(value="synd") Tsynd synd){
-		mysqlService.saveOrUpdate(synd);
-		for(String syndname :synd.getSynd().split(",")){
-			String code=DigestUtils.md5Hex(syndname.trim());
-			Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class,"code", code);
-			if(syndset==null){
-				syndset=new Tsyndset();
-				String refer=synd.getId()+":"+synd.getTitle();
-				syndset.setRefer("["+refer+"]");
-				syndset.setCode(code);
-				syndset.setSynd(syndname);
-				mysqlService.saveOrUpdate(syndset);
+		if(StringUtils.isNotEmpty(synd.getSynd())){
+			List<String> syndList = Arrays.asList(synd.getSynd().split("\\s+"));
+			synd.setSynd(new HashSet<String>(syndList).toString().replaceAll("\\[|\\]",""));  
+			mysqlService.saveOrUpdate(synd);
+			for(String syndname :synd.getSynd().split("\\s+")){
+				String code=DigestUtils.md5Hex(syndname.trim());
+				Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class,"code", code);
+				if(syndset==null){
+					syndset=new Tsyndset();
+					String refer=synd.getId()+":"+synd.getTitle();
+					syndset.setRefer("["+refer+"]");
+					syndset.setCode(code);
+					syndset.setSynd(syndname);
+					mysqlService.saveOrUpdate(syndset);
+				}else {
+					String refer = syndset.getRefer();
+					if(!refer.contains("["+synd.getId()+":"+synd.getTitle()+"]")){
+						refer+="["+synd.getId()+":"+synd.getTitle()+"] ";
+						log.debug("refer:"+refer);
+						syndset.setRefer(refer);
+						mysqlService.saveOrUpdate(syndset);
+					}
+				}
 			}
 		}
 		return "redirect:/admin/synd/list.jhtml";
@@ -140,7 +156,6 @@ public class AdminSyndController {
 	public @ResponseBody String getSynd(@RequestParam(value="keywords")String keywords) {
 		StringBuilder sb=new StringBuilder();
 		if(StringUtils.isNotEmpty(keywords)){
-			System.out.println(keywords);
 			@SuppressWarnings("unchecked")
 			List<Tsyndset> syndset = (List<Tsyndset>) ((MySQLService)mysqlService).findObjecList(Tsyndset.class, "synd", keywords);
 			for (Tsyndset synd : syndset) {
@@ -150,4 +165,27 @@ public class AdminSyndController {
 		return sb.toString();
 	}
 	
+	@RequestMapping("/delete/syndname")
+	public @ResponseBody String delete(Integer id,String syndname){
+		if(StringUtils.isNotEmpty(syndname)){
+			String code=DigestUtils.md5Hex(syndname.trim());
+			Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class, "code", code);
+			if(syndset!=null){
+				if(StringUtils.isNotEmpty(syndset.getRefer())){
+					Tsynd synd=(Tsynd)mysqlService.findObject(Tsynd.class, id);
+					String refer=syndset.getRefer().replace("["+id+":"+synd.getTitle()+"]", "");
+					syndset.setRefer(refer);
+					mysqlService.saveOrUpdate(syndset);
+				}
+			}
+			Tsynd syndObj=(Tsynd)mysqlService.findObject(Tsynd.class, id);
+			if(syndObj.getSynd().contains(syndname.trim())){
+				String synd=syndObj.getSynd().replace(syndname.trim(), "");
+				syndObj.setSynd(synd);
+				mysqlService.saveOrUpdate(syndObj);
+			}
+		}
+		
+		return "success";
+	}
 }

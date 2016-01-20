@@ -23,7 +23,7 @@ public class Tsynd extends TbaseEntity {
 	}
 
 	public String getSynd() {
-		return synd;
+		return synd.replaceAll(","," ");
 	}
 
 	public void setSynd(String synd) {

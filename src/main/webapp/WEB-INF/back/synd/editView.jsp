@@ -1,10 +1,10 @@
-<%@page import="cn.believeus.model.Tsynd"%>
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>   
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %> 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
@@ -47,50 +47,60 @@ table.input th {
 <script type="text/javascript">
 	
 		$(function(){
-			
+			$('.list_box').hide();
 			 //在表格中添加一行
-			 var tr_index=1;
+			 var index=1;
 			 $("#add_synd").click(function(){
-				 var delTr="$('#trId"+tr_index+"').remove()";
-			 	 var trHTML = "<tr id=trId"+tr_index+"><th>临床症状:</th><td><input type='text' name='synd' onkeyup='auto(this)' class='text' style='margin-right:8px;' maxlength='200' /><a href='javascript:void(0);' onclick="+delTr+" style='color: red;'>X</a><div class='list_box'></div></td></tr>";
-				 $("#tr_begin").after(trHTML);
-				 tr_index++;
+			 	 var trHTML = "<tr id=trId"+index+"><th>临床症状:</th><td><input id='syndname' type='text' name='synd' onkeyup='new Utils().autocomplete(this)' class='text' style='margin-right:8px;' maxlength='200' /><a href='javascript:void(0);' onclick='new Utils().kill(this)' style='color: red;'>X</a><div class='list_box'></div></td></tr>";
+				 $("#tr0").after(trHTML);
+				 index++;
 			 });
-			 
-			 
-			 $('.list_box').hide();
-			
-			 
 		 
 		});
 		 
-		 function auto(obj){
-			   var parent=$(obj).parent();
-				var keywords = $(obj).val();
-				var data = 'keywords=' + keywords;
-				$.ajax({
-					type:"POST",
-					url:"/autocomplete/getSynd.jhtml",
-					data:data,
-					success:function(html) {
-						parent.find('.list_box').show();
-						parent.find('.list_box').html(html);
-						parent.find('.list_box span').hover(function(){
-							$(this).addClass('hover');
-						},function(){
-							$(this).removeClass('hover');
-						});
-						parent.find('.list_box span').click(function(){
-							$(obj).val($(this).text());
-							parent.find('.list_box').hide();
-						});
-					}
-				});
-				return false;
-			};
-         
-	
-	</script>
+	var Utils = function() {
+		//共有方法
+		this.autocomplete = function(obj) {
+			var parent = $(obj).parent();
+			var keywords = $(obj).val();
+			var data = 'keywords=' + keywords;
+			$.ajax({
+				type : "POST",
+				url : "/autocomplete/getSynd.jhtml",
+				data : data,
+				success : function(html) {
+					parent.find('.list_box').show();
+					parent.find('.list_box').html(html);
+					parent.find('.list_box span').hover(function() {
+						$(this).addClass('hover');
+					}, function() {
+						$(this).removeClass('hover');
+					});
+					parent.find('.list_box span').click(function() {
+						$(obj).val($(this).text());
+						parent.find('.list_box').hide();
+					});
+				}
+			});
+			return false;
+		};
+		
+		this.kill=function(obj){
+			var synd_id=$("#synd-id").val();
+			var syndname = $(obj).parent().find("#syndname").val();
+			var data='id='+synd_id+"&syndname="+syndname;
+			$.ajax({
+				type : "POST",
+				url : "/delete/syndname.jhtml",
+				data : data,
+				success : function(html) {
+					$(obj).parent().parent().remove();
+				}
+			});
+			return false;
+		};
+	}
+</script>
   </head>
   
   <body>
@@ -98,9 +108,9 @@ table.input th {
 		<a href="/admin/manager.jhtml" target="_parent">首页</a> &raquo; 添加病证
 	</div>
 	<form id="inputForm" action="/admin/synd/update.jhtml" method="post">
-	  <input type="hidden" name="id" value="${synd.id}"/>
+	  <input type="hidden" name="id" id="synd-id" value="${synd.id}"/>
 		<table class="input" id="detal_tab">
-			<tr id="tr_begin">
+			<tr id="tr0">
 				<th>
 					病证名:
 				</th>
@@ -109,14 +119,15 @@ table.input th {
 					<a href="javascript:void(0);" id="add_synd" style="color: green;">++</a>
 				</td>
 			</tr>
-			<c:forEach items="${synd.synd}" var="strSynd" varStatus="status">
+			<c:set var="syndList" value="${fn:split(synd.synd, ' ')}" />
+			<c:forEach items="${syndList}" var="syndname" varStatus="status">
 				<tr id="trId${status.index+1}"> 
 			 	<th>
 					临床症状:
 				</th>
 			 	<td>
-			    	<input value="${strSynd }" name="synd" class="text" onkeyup="auto(this)"/>
-			    	<a href="javascript:void(0);" id="add" style="color: red;" onclick="$(this).parent().parent().remove()">X</a>
+			    	<input value="${syndname}" name="synd" id="syndname" class="text" onkeyup="auto(this)"/>
+			    	<a href="javascript:void(0);" id="add" style="color: red;" onclick="new Utils().kill(this)">X</a>
 			    	<div class="list_box">
 						
 					</div>

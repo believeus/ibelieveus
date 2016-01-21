@@ -10,14 +10,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <head>
   
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<title>添加新闻 - Powered By believeus</title>
+	<title></title>
 	<meta name="author" content="believeus Team" />
 	<meta name="copyright" content="believeus" />
 	<link href="/static/public/css/common_s.css" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="/static/public/js/jquery.js"></script>
 	<script type="text/javascript" src="/static/public/js/jquery.validate.js"></script>
-	<script type="text/javascript" src="/static/public/js/admin/ueditor1_2_6_2/ueditor.config.js"></script>
-	<script type="text/javascript" src="/static/public/js/admin/ueditor1_2_6_2/ueditor.all.js"></script>
 	<script type="text/javascript" src="/static/public/js/common.js"></script>
 	<script type="text/javascript" src="/static/public/js/input.js"></script>
 <style type="text/css">
@@ -47,14 +45,24 @@ table.input th {
 <script type="text/javascript">
 	
 		$(function(){
+			
+			 $("#inputForm").validate({
+				 rules: {
+					 title:{
+						  required: true,
+		                }
+					 }
+					
+			 });
 			$('.list_box').hide();
 			 //在表格中添加一行
 			 var index=1;
 			 $("#add_synd").click(function(){
-			 	 var trHTML = "<tr id=trId"+index+"><th>临床症状:</th><td><input id='syndname' type='text' name='synd' onkeyup='new Utils().autocomplete(this)' class='text' style='margin-right:8px;' maxlength='200' /><a href='javascript:void(0);' onclick='new Utils().kill(this)' style='color: red;'>X</a><div class='list_box'></div></td></tr>";
+			 	 var trHTML = "<tr id=trId"+index+"><th>临床症状:</th><td><input id='syndname' type='text' name='synd' onkeyup='new Utils().autocomplete(this)' class='text' style='margin-right:8px;' maxlength='200' /><input type='button' class='button' onclick='new Utils().kill(this)' style='color: red;' value='删除'/><div class='list_box'></div></td></tr>";
 				 $("#tr0").after(trHTML);
 				 index++;
 			 });
+			 
 		 
 		});
 		 
@@ -66,7 +74,7 @@ table.input th {
 			var data = 'keywords=' + keywords;
 			$.ajax({
 				type : "POST",
-				url : "/autocomplete/getSynd.jhtml",
+				url : "/admin/synd/getSynd.jhtml",
 				data : data,
 				success : function(html) {
 					parent.find('.list_box').show();
@@ -91,7 +99,7 @@ table.input th {
 			var data='id='+synd_id+"&syndname="+syndname;
 			$.ajax({
 				type : "POST",
-				url : "/delete/syndname.jhtml",
+				url : "/admin/synd/deletesynd.jhtml",
 				data : data,
 				success : function(html) {
 					$(obj).parent().parent().remove();
@@ -115,8 +123,8 @@ table.input th {
 					病证名:
 				</th>
 				<td>
-					<input type="text" name="title" value="${synd.title}" class="text" maxlength="200" />
-					<a href="javascript:void(0);" id="add_synd" style="color: green;">++</a>
+					<input type="text" name="title" id="title"  value="${synd.title}" class="text" maxlength="200" />
+					<input type="button" class="button" id="add_synd" value="添加" />
 				</td>
 			</tr>
 			<c:set var="syndList" value="${fn:split(synd.synd, ' ')}" />
@@ -127,7 +135,7 @@ table.input th {
 				</th>
 			 	<td>
 			    	<input value="${syndname}" name="synd" id="syndname" class="text" onkeyup="auto(this)"/>
-			    	<a href="javascript:void(0);" id="add" style="color: red;" onclick="new Utils().kill(this)">X</a>
+			    	<input type="button" id="add" style="color: red;" onclick="new Utils().kill(this)" class="button" value="删除"/>
 			    	<div class="list_box">
 						
 					</div>

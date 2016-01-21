@@ -1,11 +1,7 @@
 package cn.believeus.admin.controller;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -72,6 +68,7 @@ public class AdminSyndController {
 	
 	@RequestMapping(value="/admin/synd/save")
 	public String save(Tsynd synd){
+		synd.setCode(DigestUtils.md5Hex(synd.getTitle().trim()));
 		mysqlService.saveOrUpdate(synd);
 		String[] synds = synd.getSynd().split("\\s+");
 		for (String syndname : synds) {
@@ -106,8 +103,6 @@ public class AdminSyndController {
 	@RequestMapping(value="/admin/synd/update")
 	public String update(@ModelAttribute(value="synd") Tsynd synd){
 		if(StringUtils.isNotEmpty(synd.getSynd())){
-			List<String> syndList = Arrays.asList(synd.getSynd().split("\\s+"));
-			synd.setSynd(new HashSet<String>(syndList).toString().replaceAll("\\[|\\]",""));  
 			mysqlService.saveOrUpdate(synd);
 			for(String syndname :synd.getSynd().split("\\s+")){
 				String code=DigestUtils.md5Hex(syndname.trim());
@@ -134,7 +129,7 @@ public class AdminSyndController {
 	}
 	
 	@RequestMapping(value="/admin/synd/delete")
-	public  String delete(Integer id){
+	public String delete(Integer id){
 		Tsynd synd = (Tsynd)mysqlService.findObject(Tsynd.class, id);
 		String value=synd.getTitle().trim();
 		@SuppressWarnings("unchecked")  
@@ -152,7 +147,7 @@ public class AdminSyndController {
 		return "/admin/synd/list.jhtml";
 	};
 	
-	@RequestMapping("/autocomplete/getSynd")
+	@RequestMapping("/admin/synd/getSynd")
 	public @ResponseBody String getSynd(@RequestParam(value="keywords")String keywords) {
 		StringBuilder sb=new StringBuilder();
 		if(StringUtils.isNotEmpty(keywords)){
@@ -165,7 +160,7 @@ public class AdminSyndController {
 		return sb.toString();
 	}
 	
-	@RequestMapping("/delete/syndname")
+	@RequestMapping("/admin/synd/deletesynd")
 	public @ResponseBody String delete(Integer id,String syndname){
 		if(StringUtils.isNotEmpty(syndname)){
 			String code=DigestUtils.md5Hex(syndname.trim());
@@ -185,7 +180,16 @@ public class AdminSyndController {
 				mysqlService.saveOrUpdate(syndObj);
 			}
 		}
-		
 		return "success";
+	}
+	@RequestMapping("/admin/synd/ajaxTitle")
+	public @ResponseBody String ajaxTitle(String title){
+		String code=DigestUtils.md5Hex(title);
+		Tsynd synd=(Tsynd)mysqlService.findObject(Tsynd.class, "code", code);
+		if(synd!=null){
+			return "false";
+		}else {
+			return "true";
+		}
 	}
 }

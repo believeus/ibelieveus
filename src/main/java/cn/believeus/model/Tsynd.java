@@ -1,5 +1,7 @@
 package cn.believeus.model;
 
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -9,10 +11,20 @@ import javax.persistence.Table;
 public class Tsynd extends TbaseEntity {
 
 	private static final long serialVersionUID = -2827186874700811417L;
+	private String code;
 	//病证名
 	private String title;
 	//症状
 	private String synd;
+
+	
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
 
 	public String getTitle() {
 		return title;
@@ -23,11 +35,16 @@ public class Tsynd extends TbaseEntity {
 	}
 
 	public String getSynd() {
-		return synd.replaceAll(","," ");
+		return synd;
 	}
 
 	public void setSynd(String synd) {
-		this.synd = synd;
+		Set<String> syndset=new HashSet<String>();
+		for(String syndstr: synd.split(",")){
+			syndset.add(syndstr.trim());
+		}
+		String pattern="\\[|\\]|,|\\s+";
+		this.synd=syndset.toString().replaceAll(pattern," ").trim();
 	}
 
 }

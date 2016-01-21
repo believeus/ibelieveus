@@ -58,7 +58,7 @@ table.input th {
 			 //在表格中添加一行
 			 var index=1;
 			 $("#add_synd").click(function(){
-			 	 var trHTML = "<tr id=trId"+index+"><th>临床症状:</th><td><input id='syndname' type='text' name='synd' onkeyup='new Utils().autocomplete(this)' class='text' style='margin-right:8px;' maxlength='200' /><input type='button' class='button' onclick='new Utils().kill(this)' style='color: red;' value='删除'/><div class='list_box'></div></td></tr>";
+			 	 var trHTML = "<tr id=trId"+index+"><th>临床症状:</th><td><input id='syndname' type='text' name='synd' onkeyup='new Utils().autocomplete(this)' class='text' style='margin-right:5px;' maxlength='200' /><input type='button' class='button' onclick='new Utils().kill(this)' style='color: red;' value='删除'/><div class='list_box'></div></td></tr>";
 				 $("#tr0").after(trHTML);
 				 index++;
 			 });

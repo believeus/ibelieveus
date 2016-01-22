@@ -76,13 +76,13 @@ public class AdminSyndController {
 			Tsyndset syndset = (Tsyndset)mysqlService.findObject(Tsyndset.class,"code", code);
 			if(syndset!=null){
 				String refer = syndset.getRefer();
-				refer+="["+synd.getId()+":"+synd.getTitle()+"] ";
+				refer+=" ["+synd.getId()+":"+synd.getTitle()+"]";
 				log.debug("refer:"+refer);
 				syndset.setRefer(refer);
 			}else {
 				syndset=new Tsyndset();
 				String refer=synd.getId()+":"+synd.getTitle();
-				syndset.setRefer("["+refer+"] ");
+				syndset.setRefer(" ["+refer+"]");
 				syndset.setCode(code);
 				syndset.setSynd(syndname);
 			}
@@ -110,14 +110,14 @@ public class AdminSyndController {
 				if(syndset==null){
 					syndset=new Tsyndset();
 					String refer=synd.getId()+":"+synd.getTitle();
-					syndset.setRefer("["+refer+"]");
+					syndset.setRefer(" ["+refer+"]");
 					syndset.setCode(code);
 					syndset.setSynd(syndname);
 					mysqlService.saveOrUpdate(syndset);
 				}else {
 					String refer = syndset.getRefer();
 					if(!refer.contains("["+synd.getId()+":"+synd.getTitle()+"]")){
-						refer+="["+synd.getId()+":"+synd.getTitle()+"] ";
+						refer+=" ["+synd.getId()+":"+synd.getTitle()+"]";
 						log.debug("refer:"+refer);
 						syndset.setRefer(refer);
 						mysqlService.saveOrUpdate(syndset);

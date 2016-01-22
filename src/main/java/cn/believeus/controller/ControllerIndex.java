@@ -2,12 +2,8 @@ package cn.believeus.controller;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import javax.annotation.Resource;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,40 +12,42 @@ import cn.believeus.model.Tsynd;
 import cn.believeus.model.Tsyndset;
 import cn.believeus.service.IService;
 
-/**
- * 首页面
- * */
+
 @Controller
 public class ControllerIndex {
 	@Resource
 	private IService mysqlService;
-	private Map<String, Map<String, String>> usersyndmap=new HashMap<String, Map<String,String>>();
 	@RequestMapping("/areY")
-	public @ResponseBody String areY(String username,String syndname,String answer) {
-		String code = DigestUtils.md5Hex(syndname);
-		Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class,"code", code);
-		Map<String, String> syndmap = usersyndmap.get(username);
+	public @ResponseBody String areY(String syndname) {
+		Map<String, String> loadsynd = loadData(syndname);
+		if(loadsynd.isEmpty()){
+			return "0";
+		}else {
+			return loadsynd.toString();
+		}
+		
+	}
+	
+	//加载数据
+	public Map<String, String> loadData(String syndcode){
 		//加载数据
-		if(syndmap==null||syndmap.isEmpty()){
-			for(String refer :syndset.getRefer().split("\\s+")){
-				Pattern regex = Pattern.compile("[0-9]+");
-				Matcher matcher = regex.matcher(refer);
-				if(matcher.find()){
-					int syndId = Integer.parseInt(matcher.group());
-					//查找关联的"证"
-					Tsynd syndObj = (Tsynd)mysqlService.findObject(Tsynd.class,syndId);
-					for(String synd :syndObj.getSynd().split("\\s+")){
-						syndmap.put(synd, syndObj.getTitle());
+		 Map<String, String> usersynd = new HashMap<String, String>();
+			Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class,"code", syndcode);
+			if(syndset!=null){
+				String[] refers = syndset.getRefer().split("\\s+");
+				if (refers != null && refers.length != 0) {
+					for (String refer : refers) {
+							//[10:胃实热证]
+							int syndId = Integer.parseInt(refer.substring(1,refer.indexOf(":")));
+							// 查找关联的"证"
+							Tsynd syndObj = (Tsynd) mysqlService.findObject(Tsynd.class, syndId);
+							for (String synd : syndObj.getSynd().split("\\s+")) {
+								usersynd.put(synd, syndObj.getTitle());
+							}
+						}
+						
 					}
 				}
-				
-			}
-			usersyndmap.put(username, syndmap);
+			return usersynd;
 		}
-		if(syndmap==null||syndmap.isEmpty()){
-			return "还未收录该症状";
-		}
-		return "";
 	}
-
-}

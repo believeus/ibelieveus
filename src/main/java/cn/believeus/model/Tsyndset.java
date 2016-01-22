@@ -51,7 +51,7 @@ public class Tsyndset extends TbaseEntity {
 	}
 	@Field(store=Store.NO,index=Index.TOKENIZED)
 	public String getRefer() {
-		return refer;
+		return refer.trim();
 	}
 
 	public void setRefer(String refer) {

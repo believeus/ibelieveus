@@ -30,9 +30,13 @@ public class Tsyndset extends TbaseEntity {
 	private String synd;
 	// 关联的病证
 	private String refer;
+	//可能的病证
+	private String  maybesynd;
+	
 	// 病症描述
 	private String description;
 	private List<String> reflist=new ArrayList<String>();
+	private List<String> syndList=new ArrayList<String>();
 
 	public String getCode() {
 		return code;
@@ -46,12 +50,22 @@ public class Tsyndset extends TbaseEntity {
 		return synd;
 	}
 
+	public String getMaybesynd() {
+		return maybesynd;
+	}
+
+	public void setMaybesynd(String maybesynd) {
+		this.maybesynd=maybesynd;
+	}
+
 	public void setSynd(String synd) {
 		this.synd = synd;
 	}
 	@Field(store=Store.NO,index=Index.TOKENIZED)
 	public String getRefer() {
-		return refer.trim();
+		if(refer!=null)
+			return refer.trim();
+		return refer;
 	}
 
 	public void setRefer(String refer) {
@@ -68,13 +82,29 @@ public class Tsyndset extends TbaseEntity {
 	
 	@Transient
 	public List<String> getReflist() {
-		reflist = Arrays.asList(refer.split("\\s"));
+		if(refer!=null){
+			reflist = Arrays.asList(refer.split("\\s"));
+		}
 		return reflist;
 	}
 
 	public void setReflist(List<String> reflist) {
 		this.reflist = reflist;
 	}
+
+	@Transient
+	public List<String> getSyndList() {
+		 if(maybesynd!=null){
+			 syndList=Arrays.asList(maybesynd.split("\\s+"));
+		 }
+		 return syndList;
+	}
+
+	public void setSyndList(List<String> syndList) {
+		this.syndList = syndList;
+	}
+
+	
 	
 
 }

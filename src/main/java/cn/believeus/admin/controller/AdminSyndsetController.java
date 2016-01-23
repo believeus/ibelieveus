@@ -80,7 +80,6 @@ public class AdminSyndsetController {
 						}
 					}
 				}  
-				
 				if(syndset!=null){
 					if(StringUtils.isNotEmpty(syndset.getRefer())){
 						syndset.setRefer(syndset.getRefer().replace(refer, ""));
@@ -114,5 +113,16 @@ public class AdminSyndsetController {
 	public String update(@ModelAttribute("syndset")Tsyndset syndset){
 		mysqlService.saveOrUpdate(syndset);
 		return "redirect:/admin/syndset/list.jhtml";
+	}
+	@RequestMapping("/admin/syndset/savesmaybesynd")
+	public String savesmaybesynd(Integer id,String maybesynd){
+		Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class, id);
+		if(maybesynd!=null){
+			maybesynd=maybesynd.replaceAll(",", "");
+			maybesynd=syndset.getMaybesynd()+" "+maybesynd;
+		}
+		syndset.setMaybesynd(maybesynd+" ");
+		mysqlService.saveOrUpdate(syndset);
+		return "redirect:/admin/syndset/editView.jhtml?id="+syndset.getId();
 	}
 }

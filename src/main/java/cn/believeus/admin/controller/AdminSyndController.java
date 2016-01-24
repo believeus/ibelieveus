@@ -50,7 +50,7 @@ public class AdminSyndController {
 		if (StringUtils.isEmpty(pageNumber)) {
 			pageNumber="1";
 		}
-		Pageable pageable=new Pageable(Integer.valueOf(pageNumber),20);
+		Pageable pageable=new Pageable(Integer.valueOf(pageNumber),12);
 		String hql="From Tsynd";
 		Page<?> page = ((MySQLService)mysqlService).findObjectList(hql, pageable);
 		request.setAttribute("page",page);

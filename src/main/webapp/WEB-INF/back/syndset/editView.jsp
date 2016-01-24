@@ -199,7 +199,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</form>	
 		<c:if test="${!empty syndset.syndList }">
 		<hr>
-		<form action="" method="post">
+		<form action="/admin/syndset/deletemaybesynd.jhtml" method="post">
+		<input type="hidden" name="id" value="${syndset.id}"/>
 			<table class="input">
 				<tr>
 					<th>辩证病证:</th>

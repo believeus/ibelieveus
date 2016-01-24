@@ -7,11 +7,13 @@ import java.util.regex.Pattern;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import cn.believeus.PaginationUtil.Page;
@@ -45,7 +47,7 @@ public class AdminSyndsetController {
 		if (StringUtils.isEmpty(pageNumber)) {
 			pageNumber="1";
 		}
-		Pageable pageable=new Pageable(Integer.valueOf(pageNumber),20);
+		Pageable pageable=new Pageable(Integer.valueOf(pageNumber),12);
 		String hql="From Tsyndset";
 		Page<?> page = ((MySQLService)mysqlService).findObjectList(hql, pageable);
 		request.setAttribute("page",page);
@@ -54,6 +56,36 @@ public class AdminSyndsetController {
 		PaginationUtil.pagination(request, page.getPageNumber(),page.getTotalPages(), 0);
 		
 		return "/WEB-INF/back/syndset/list.jsp";
+	}
+	
+	@RequestMapping("/admin/syndset/addView")
+	public ModelAndView addView(){
+		ModelAndView modelView=new ModelAndView();
+		modelView.setViewName("/WEB-INF/back/syndset/addView.jsp");
+		return modelView;
+	}
+	
+	@RequestMapping("/admin/syndset/ajaxsynd")
+	public @ResponseBody String ajaxsynd(String synd){
+		String code = DigestUtils.md5Hex(synd);
+		Tsyndset syndset = (Tsyndset)mysqlService.findObject(Tsyndset.class, "code", code);
+		if (syndset!=null) {
+			return "false";
+		}
+		return "true";
+	}
+	
+	@RequestMapping("/admin/syndset/save")
+	public String save(Tsyndset syndset){
+		String maybesynd=syndset.getMaybesynd().replaceAll(",", "");
+		String code=DigestUtils.md5Hex(syndset.getSynd());
+		if("".equals(maybesynd)){
+			maybesynd=null;
+		}
+		syndset.setMaybesynd(maybesynd);
+		syndset.setCode(code);
+		mysqlService.saveOrUpdate(syndset);
+		return "redirect:/admin/syndset/editView.jhtml?id="+syndset.getId();
 	}
 	
 	@RequestMapping("/admin/syndset/editView")
@@ -119,9 +151,22 @@ public class AdminSyndsetController {
 		Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class, id);
 		if(maybesynd!=null){
 			maybesynd=maybesynd.replaceAll(",", "");
-			maybesynd=syndset.getMaybesynd()+" "+maybesynd;
+			if(syndset.getMaybesynd()!=null){
+				maybesynd=syndset.getMaybesynd()+" "+maybesynd;
+			}
 		}
 		syndset.setMaybesynd(maybesynd+" ");
+		mysqlService.saveOrUpdate(syndset);
+		return "redirect:/admin/syndset/editView.jhtml?id="+syndset.getId();
+	}
+	
+	@RequestMapping("/admin/syndset/deletemaybesynd")
+	public String deletemaybesynd(Integer id,String maybesynd){
+		Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class, id);
+		for(String synd: maybesynd.split(",")){
+			String result = syndset.getMaybesynd().replace(synd,"").replaceAll("\\s+"," ");
+			syndset.setMaybesynd(result.trim());
+		}
 		mysqlService.saveOrUpdate(syndset);
 		return "redirect:/admin/syndset/editView.jhtml?id="+syndset.getId();
 	}

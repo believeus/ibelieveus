@@ -39,11 +39,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                    }
 	                }
 				 },
-				 messages: {
-					 title:{
-						 remote:" 已存在"
-					 }
+			 messages: {
+				 title:{
+					 remote:" 已存在"
 				 }
+			 }
 		 });
 		
 		 //在表格中添加一行

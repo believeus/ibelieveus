@@ -34,7 +34,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div>
 	<div>
 		<div class="bar">
-			<a href="/admin/synd/addView.jhtml" class="iconButton">
+			<a href="/admin/syndset/addView.jhtml" class="iconButton">
 				<span class="addIcon">&nbsp;</span>添加
 			</a>
 		<div class="buttonWrap">
@@ -78,7 +78,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</table>
 	</div>
 	<div>
-		<form action="/admin/news/list.jhtml" id="listForm">
+		<form action="/admin/syndset/list.jhtml" id="listForm">
 			<jsp:include page="../include/pagination.jsp" flush="true" />
 		</form>
 	</div>

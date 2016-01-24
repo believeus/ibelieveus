@@ -150,7 +150,13 @@
         <div id="tabs" class="easyui-tabs"  fit="true" border="false" >
 			<div title="欢迎使用" style="padding:20px;overflow:hidden;" id="home">
 				
-			<h1 style="font-size: 40px;">欢迎登陆后台</h1>
+			<h1 style="font-size: 40px;">《大医精诚》</大医精诚></h1>
+			<span style="font-size: 20px;">凡大医治病，必当安神定志，无欲无求，先发大慈恻隐之心，</span><br/>
+			<span style="font-size: 20px;">誓愿普救含灵之苦。若有疾厄来求救者，不得问其贵贱贫富，</span><br/>
+			<span style="font-size: 20px;">长幼妍媸，怨亲善友，华夷愚智，普同一等，皆如至亲之想。</span><br/>
+			<span style="font-size: 20px;">亦不得瞻前顾后，自虑吉凶，护惜身命。见彼苦恼，若己有之，</span><br/>
+			<span style="font-size: 20px;">深心凄怆。勿避险巇、昼夜寒暑、饥渴疲劳，一心赴救，</span><br/>
+			<span style="font-size: 20px;">无作功夫形迹之心。如此可为苍生大医，反此则是含灵巨贼。</span>
 			</div>
 		</div>
     </div>

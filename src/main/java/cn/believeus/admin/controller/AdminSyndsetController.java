@@ -147,15 +147,17 @@ public class AdminSyndsetController {
 			for(String rid:syndset.getReferIds()){
 				Tsynd synd=(Tsynd)mysqlService.findObject(Tsynd.class,Integer.parseInt(rid));
 				if(synd.getSynd()!=null){
-					String srcsynd=syndset.getSynd();
-					String newsynd=synd.clear(hiddensynd);
-					synd.setSynd(newsynd+" "+srcsynd+" ");
-					System.out.println(synd);
+					String inputsynd=syndset.getSynd();
+					String newsynd=synd.replace(hiddensynd,inputsynd);
+					synd.setSynd(newsynd+" ");
 					mysqlService.saveOrUpdate(synd);
 				}
 			}
-			
-			mysqlService.saveOrUpdate(syndset);
+			String code=DigestUtils.md5Hex(syndset.getSynd());
+			Tsyndset syndsetobj=(Tsyndset)mysqlService.findObject(Tsyndset.class, "code", code);
+			if(syndsetobj==null){
+				mysqlService.saveOrUpdate(syndset);
+			}
 		}
 		return "redirect:/admin/syndset/editView.jhtml?id="+syndset.getId();
 	}

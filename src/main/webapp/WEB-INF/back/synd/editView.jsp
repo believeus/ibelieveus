@@ -58,7 +58,17 @@ table.input th {
 			 //在表格中添加一行
 			 var index=1;
 			 $("#add_synd").click(function(){
-			 	 var trHTML = "<tr id=trId"+index+"><th>临床症状:</th><td><input id='syndname' type='text' name='synd' onkeyup='new Utils().autocomplete(this)' class='text' style='margin-right:5px;' maxlength='200' /><input type='button' class='button' onclick='new Utils().kill(this)' style='color: red;' value='删除'/><div class='list_box'></div></td></tr>";
+			 	 var trHTML = "<tr id=trId"+index+">"+
+			 	 				"<th>临床症状:</th>"+
+			 	 				  "<td>"+
+			 	 				  	"<input id='syndname' type='text' name='newsynd' onkeyup='new Utils().autocomplete(this)' class='text' style='margin-right:5px;' maxlength='200' />"+
+			 	 				  	"<input value='' name='oldsynd'  type='hidden' />"+
+			 				    	"<input type='button'  onclick='new Utils().update(this)' class='button' value='更新'/>"+
+			 	 				  	"<input type='button' class='button' onclick='new Utils().clear(this)' style='color: red;' value='删除'/>"+
+			 	 				  	"<span id='result'></span>"+
+			 	 				  	"<div class='list_box'></div>"+
+			 	 				  "</td>"+
+			 	 				"</tr>";
 				 $("#tr0").after(trHTML);
 				 index++;
 			 });
@@ -93,7 +103,7 @@ table.input th {
 			return false;
 		};
 		
-		this.kill=function(obj){
+		this.clear=function(obj){
 			var synd_id=$("#synd-id").val();
 			var syndname = $(obj).parent().find("#syndname").val();
 			var data='id='+synd_id+"&syndname="+syndname;
@@ -103,6 +113,28 @@ table.input th {
 				data : data,
 				success : function(html) {
 					$(obj).parent().parent().remove();
+				}
+			});
+			return false;
+		};
+		this.update=function(obj){
+			var id=$("#synd-id").val();
+			var newsynd=$(obj).parent().find("input[name='newsynd']").val();
+			var oldsynd=$(obj).parent().find("input[name='oldsynd']").val();
+			var data="id="+id+"&newsynd="+newsynd+"&oldsynd="+oldsynd;
+			$.ajax({
+				type : "POST",
+				url : "/admin/synd/update.jhtml",
+				data : data,
+				success : function(result) {
+					if(result=="false"){
+					  $(obj).parent().find("span").text("已存在");
+					}else if(result=="true"){
+						$(obj).parent().find("span").text("已更新");
+						$(obj).parent().find("input[name='oldsynd']").val(newsynd);
+					}else if(result=="empty"){
+						$(obj).parent().find("span").text("必填");
+					}
 				}
 			});
 			return false;
@@ -134,11 +166,12 @@ table.input th {
 					临床症状:
 				</th>
 			 	<td>
-			    	<input value="${syndname}" name="synd" id="syndname" class="text" onkeyup="auto(this)"/>
-			    	<input type="button" id="add" style="color: red;" onclick="new Utils().kill(this)" class="button" value="删除"/>
-			    	<div class="list_box">
-						
-					</div>
+			    	<input value="${syndname}" name="newsynd" id="syndname" class="text" onkeyup="new Utils().autocomplete(this)"/>
+			    	<input value="${syndname}" name="oldsynd"  type="hidden" />
+			    	<input type="button"  onclick="new Utils().update(this)" class="button" value="更新"/>
+			    	<input type="button" id="add" style="color: red;margin-left: -4px" onclick="new Utils().clear(this)" class="button" value="删除"/>
+			    	<span id="result"></span>
+			    	<div class="list_box"></div>
 			    </td>
 			 </tr>
 			</c:forEach>
@@ -147,7 +180,6 @@ table.input th {
 					&nbsp;
 				</th>
 				<td colspan="3">
-					<input type="submit" class="button" value="确定" />
 					<input type="button" class="button" value="返回"  onclick="javascript:window.history.back();"/>
 				</td>
 			</tr>

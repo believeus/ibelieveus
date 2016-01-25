@@ -101,33 +101,46 @@ public class AdminSyndController {
 		return modelView;
 	}
 	@RequestMapping(value="/admin/synd/update")
-	public String update(@ModelAttribute(value="synd") Tsynd synd){
-		if(StringUtils.isNotEmpty(synd.getSynd())){
-			mysqlService.saveOrUpdate(synd);
-			for(String syndname :synd.getSynd().split("\\s+")){
-				String code=DigestUtils.md5Hex(syndname.trim());
-				Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class,"code", code);
-				if(syndset==null){
-					syndset=new Tsyndset();
-					String refer=synd.getId()+":"+synd.getTitle();
-					syndset.setRefer(" ["+refer+"]");
-					syndset.setCode(code);
-					syndset.setSynd(syndname);
-					mysqlService.saveOrUpdate(syndset);
-				}else {
-					String refer = syndset.getRefer();
-					if(refer!=null){
-						if(!refer.contains("["+synd.getId()+":"+synd.getTitle()+"]")){
-							refer+=" ["+synd.getId()+":"+synd.getTitle()+"]";
-							log.debug("refer:"+refer);
-							syndset.setRefer(refer);
-							mysqlService.saveOrUpdate(syndset);
-						}
+	public @ResponseBody String update(Integer id,String newsynd,String oldsynd){
+		if("".equals(newsynd)){
+			return "empty";
+		}
+		if(oldsynd.equals(newsynd)){
+			return "false";
+		}else {
+			Tsynd tsynd=(Tsynd)mysqlService.findObject(Tsynd.class, id);
+			if(!"".equals(oldsynd)){
+				tsynd.setSynd(tsynd.replace(oldsynd,newsynd));
+			}else {
+				tsynd.setSynd(tsynd.getSynd()+" "+newsynd+" ");
+			}
+			mysqlService.saveOrUpdate(tsynd);
+			String code=DigestUtils.md5Hex(oldsynd);
+			Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class, "code", code);
+			if(syndset==null){
+				syndset=new Tsyndset();
+				String refer=tsynd.getId()+":"+tsynd.getTitle();
+				syndset.setRefer(" ["+refer+"]");
+				code=DigestUtils.md5Hex(newsynd);
+				syndset.setCode(code);
+				syndset.setSynd(newsynd);
+				mysqlService.saveOrUpdate(syndset);
+			}else {
+				String refer = syndset.getRefer();
+				if(refer!=null){
+					if(!refer.contains("["+tsynd.getId()+":"+tsynd.getTitle()+"]")){
+						refer+=" ["+tsynd.getId()+":"+tsynd.getTitle()+"]";
+						log.debug("refer:"+refer);
+						syndset.setRefer(refer);
+						mysqlService.saveOrUpdate(syndset);
 					}
 				}
+				syndset.setSynd(newsynd);
+				syndset.setCode(DigestUtils.md5Hex(newsynd));
+				mysqlService.saveOrUpdate(syndset);
 			}
+			return "true";
 		}
-		return "redirect:/admin/synd/list.jhtml";
 	}
 	
 	@RequestMapping(value="/admin/synd/delete")

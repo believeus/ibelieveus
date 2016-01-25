@@ -46,5 +46,14 @@ public class Tsynd extends TbaseEntity {
 		String pattern="\\[|\\]|,|\\s+";
 		this.synd=syndset.toString().replaceAll(pattern," ").trim();
 	}
+	public String clear(String synd){
+		synd=this.synd.replace(synd,"").replaceAll("\\s+"," ");
+		return synd;
+	}
+
+	@Override
+	public String toString() {
+		return "Tsynd [code=" + code + ", title=" + title + ", synd=" + synd+ "]";
+	}
 
 }

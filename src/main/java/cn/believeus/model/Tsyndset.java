@@ -37,6 +37,7 @@ public class Tsyndset extends TbaseEntity {
 	private String description;
 	private List<String> reflist=new ArrayList<String>();
 	private List<String> syndList=new ArrayList<String>();
+	private List<String>  referIds=new ArrayList<String>();
 
 	public String getCode() {
 		return code;
@@ -102,6 +103,23 @@ public class Tsyndset extends TbaseEntity {
 
 	public void setSyndList(List<String> syndList) {
 		this.syndList = syndList;
+	}
+	
+	@Transient
+	public List<String> getReferIds() {
+		if(refer!=null){
+			for(String ref :refer.split("\\s+")){
+				if(ref!=null&&!"".equals(ref)){
+					String rid=ref.substring(1, ref.indexOf(":"));
+					referIds.add(rid);
+				}
+			}
+		}
+		return referIds;
+	}
+
+	public void setReferIds(List<String> referIds) {
+		this.referIds = referIds;
 	}
 
 	

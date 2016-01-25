@@ -142,9 +142,22 @@ public class AdminSyndsetController {
 	}
 	
 	@RequestMapping("/admin/syndset/update")
-	public String update(@ModelAttribute("syndset")Tsyndset syndset){
-		mysqlService.saveOrUpdate(syndset);
-		return "redirect:/admin/syndset/list.jhtml";
+	public String update(@ModelAttribute("syndset")Tsyndset syndset,String hiddensynd){
+		if(!hiddensynd.equals(syndset.getSynd())){
+			for(String rid:syndset.getReferIds()){
+				Tsynd synd=(Tsynd)mysqlService.findObject(Tsynd.class,Integer.parseInt(rid));
+				if(synd.getSynd()!=null){
+					String srcsynd=syndset.getSynd();
+					String newsynd=synd.clear(hiddensynd);
+					synd.setSynd(newsynd+" "+srcsynd+" ");
+					System.out.println(synd);
+					mysqlService.saveOrUpdate(synd);
+				}
+			}
+			
+			mysqlService.saveOrUpdate(syndset);
+		}
+		return "redirect:/admin/syndset/editView.jhtml?id="+syndset.getId();
 	}
 	@RequestMapping("/admin/syndset/savesmaybesynd")
 	public String savesmaybesynd(Integer id,String maybesynd){

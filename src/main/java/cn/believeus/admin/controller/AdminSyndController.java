@@ -116,11 +116,13 @@ public class AdminSyndController {
 					mysqlService.saveOrUpdate(syndset);
 				}else {
 					String refer = syndset.getRefer();
-					if(!refer.contains("["+synd.getId()+":"+synd.getTitle()+"]")){
-						refer+=" ["+synd.getId()+":"+synd.getTitle()+"]";
-						log.debug("refer:"+refer);
-						syndset.setRefer(refer);
-						mysqlService.saveOrUpdate(syndset);
+					if(refer!=null){
+						if(!refer.contains("["+synd.getId()+":"+synd.getTitle()+"]")){
+							refer+=" ["+synd.getId()+":"+synd.getTitle()+"]";
+							log.debug("refer:"+refer);
+							syndset.setRefer(refer);
+							mysqlService.saveOrUpdate(syndset);
+						}
 					}
 				}
 			}

@@ -14,6 +14,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link href="/static/public/css/common_s.css" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="/static/public/js/jquery.js"></script>
 	<script type="text/javascript" src="/static/public/js/common.js"></script>
+	<script type="text/javascript" src="/static/public/js/jquery.validate.js"></script>
 	<script type="text/javascript" src="/static/public/js/input.js"></script>
 	<style type="text/css">
 		table.input th {
@@ -22,6 +23,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</style>
 	<script type="text/javascript">
 	$().ready(function() {
+		$("#inputForm").validate({
+			 rules: {
+				 synd:{
+					  required: true
+	                }
+				 }
+				
+		 });
 	});
 	</script>
   </head>
@@ -32,13 +41,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div>
 	<form id="inputForm" action="/admin/syndset/update.jhtml" method="post" >
 		<input type="hidden" name="id" value="${syndset.id }"/>
+		<input type="hidden" name="hiddensynd" value="${syndset.synd }"/>
 		<table class="input">
 			<tr>
 				<th>
 					病症:
 				</th>
 				<td>
-					${syndset.synd }
+					<input type="text" id="synd" class="text" name="synd" value="${syndset.synd }"/>
 				</td>
 			</tr>
 			<tr>

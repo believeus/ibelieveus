@@ -172,7 +172,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</td>
 					</tr>
 					<tr>
-						<th>六经</th>
+						<th>六经:</th>
 						<td>
 							<input name="maybesynd" value="太阳证" type="checkbox" style="checkbox"/>太阳证
 							<input name="maybesynd" value="阳明证" type="checkbox" style="checkbox"/>阳明证
@@ -183,12 +183,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</td>
 					</tr>
 					<tr>
+						<th>备注:</th>
+						<td><input type="text" class="text" name="maybesynd" /></td>
+					</tr>
+					<tr>
 						<th></th>
 						<td>
 							<input type="submit" class="button" value="确定"/>
 							<input type="reset" class="button" value="清空" />
 						</td>
 					</tr>
+					
 				</table>
 		</form>	
 		

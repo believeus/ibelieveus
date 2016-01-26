@@ -116,7 +116,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</select>
 						</td>
 					</tr>
-										<tr >
+					<tr >
 						<th>八纲:</th>
 						<td colspan="2">
 							<span style="font-size: 14px;">阴阳:</span>
@@ -200,7 +200,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</td>
 					</tr>
 					<tr>
-						<th>六经</th>
+						<th>六经:</th>
 						<td>
 							<input name="maybesynd" value="太阳证" type="checkbox" style="checkbox"/>太阳证
 							<input name="maybesynd" value="阳明证" type="checkbox" style="checkbox"/>阳明证
@@ -209,6 +209,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<input name="maybesynd" value="少阴证" type="checkbox" style="checkbox"/>少阴证
 							<input name="maybesynd" value="厥阴证" type="checkbox" style="checkbox"/>厥阴证
 						</td>
+					</tr>
+					<tr>
+						<th>备注:</th>
+						<td><input type="text" class="text" name="maybesynd" /></td>
 					</tr>
 					<tr>
 						<th></th>

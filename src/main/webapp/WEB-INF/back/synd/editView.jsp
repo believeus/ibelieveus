@@ -121,22 +121,27 @@ table.input th {
 			var id=$("#synd-id").val();
 			var newsynd=$(obj).parent().find("input[name='newsynd']").val();
 			var oldsynd=$(obj).parent().find("input[name='oldsynd']").val();
-			var data="id="+id+"&newsynd="+newsynd+"&oldsynd="+oldsynd;
-			$.ajax({
-				type : "POST",
-				url : "/admin/synd/update.jhtml",
-				data : data,
-				success : function(result) {
-					if(result=="false"){
-					  $(obj).parent().find("span").text("已存在");
-					}else if(result=="true"){
-						$(obj).parent().find("span").text("已更新");
-						$(obj).parent().find("input[name='oldsynd']").val(newsynd);
-					}else if(result=="empty"){
-						$(obj).parent().find("span").text("必填");
+			if(newsynd==""){
+				$(obj).parent().find("#tip").text("必填");
+			}else if(newsynd==oldsynd){
+				$(obj).parent().find("#tip").text("无需更新");
+			}else{
+				var data="id="+id+"&newsynd="+newsynd+"&oldsynd="+oldsynd;
+				$.ajax({
+					type : "POST",
+					url : "/admin/synd/update.jhtml",
+					data : data,
+					success : function(result) {
+						 if(result=="true"){
+							$(obj).parent().find("#tip").text("已更新");
+							$(obj).parent().find("input[name='oldsynd']").val(newsynd);
+						}else{
+							$(obj).parent().find("#tip").text("服务器异常");
+						}
 					}
-				}
-			});
+				});
+			}
+			$(obj).parent().find("div[class='list_box']").hide();
 			return false;
 		};
 	}
@@ -170,7 +175,7 @@ table.input th {
 			    	<input value="${syndname}" name="oldsynd"  type="hidden" />
 			    	<input type="button"  onclick="new Utils().update(this)" class="button" value="更新"/>
 			    	<input type="button" id="add" style="color: red;margin-left: -4px" onclick="new Utils().clear(this)" class="button" value="删除"/>
-			    	<span id="result"></span>
+			    	<span id="tip"></span>
 			    	<div class="list_box"></div>
 			    </td>
 			 </tr>

@@ -153,9 +153,11 @@ public class AdminSyndsetController {
 					mysqlService.saveOrUpdate(synd);
 				}
 			}
+			//获取更新的病证
 			String code=DigestUtils.md5Hex(syndset.getSynd());
 			Tsyndset syndsetobj=(Tsyndset)mysqlService.findObject(Tsyndset.class, "code", code);
 			if(syndsetobj==null){
+				syndset.setCode(code);
 				mysqlService.saveOrUpdate(syndset);
 			}
 		}

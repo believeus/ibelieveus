@@ -102,12 +102,6 @@ public class AdminSyndController {
 	}
 	@RequestMapping(value="/admin/synd/update")
 	public @ResponseBody String update(Integer id,String newsynd,String oldsynd){
-		if("".equals(newsynd)){
-			return "empty";
-		}
-		if(oldsynd.equals(newsynd)){
-			return "false";
-		}else {
 			Tsynd tsynd=(Tsynd)mysqlService.findObject(Tsynd.class, id);
 			if(!"".equals(oldsynd)){
 				tsynd.setSynd(tsynd.replace(oldsynd,newsynd));
@@ -115,13 +109,13 @@ public class AdminSyndController {
 				tsynd.setSynd(tsynd.getSynd()+" "+newsynd+" ");
 			}
 			mysqlService.saveOrUpdate(tsynd);
-			String code=DigestUtils.md5Hex(oldsynd);
+			String code=DigestUtils.md5Hex(oldsynd.trim());
 			Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class, "code", code);
 			if(syndset==null){
 				syndset=new Tsyndset();
 				String refer=tsynd.getId()+":"+tsynd.getTitle();
 				syndset.setRefer(" ["+refer+"]");
-				code=DigestUtils.md5Hex(newsynd);
+				code=DigestUtils.md5Hex(newsynd.trim());
 				syndset.setCode(code);
 				syndset.setSynd(newsynd);
 				mysqlService.saveOrUpdate(syndset);
@@ -136,11 +130,10 @@ public class AdminSyndController {
 					}
 				}
 				syndset.setSynd(newsynd);
-				syndset.setCode(DigestUtils.md5Hex(newsynd));
+				syndset.setCode(DigestUtils.md5Hex(newsynd.trim()));
 				mysqlService.saveOrUpdate(syndset);
 			}
 			return "true";
-		}
 	}
 	
 	@RequestMapping(value="/admin/synd/delete")

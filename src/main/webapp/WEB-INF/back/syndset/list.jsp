@@ -52,10 +52,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<a href="javascript:;" class="sort" name="title">病症</a>
 				</th>
 				<th>
+					<a href="javascript:;" class="sort" name="title">辩证</a>
+				</th>
+				<th>
 					<a href="javascript:;" class="sort" name="top">病症解释</a>
 				</th>
 				<th>
-					<a href="#"  class="sort">可能病证</a>
+					<a href="#"  class="sort">关联病证</a>
 				</th>
 				<th>
 					<a href="#"  class="sort">编辑</a>
@@ -68,6 +71,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</td>
 					<td>
 						${syndset.synd}
+					</td>
+					<td>
+						${syndset.maybesynd}
 					</td>
 					<td>
 						${syndset.description}

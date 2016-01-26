@@ -128,10 +128,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<tr>
 						<th>血：</th>
 						<td>
-							<input name="maybesynd" value="气虚" type="checkbox" style="checkbox"/>血虚
-							<input name="maybesynd" value="气淤" type="checkbox" style="checkbox"/>血淤
-							<input name="maybesynd" value="气寒" type="checkbox" style="checkbox"/>血寒
-							<input name="maybesynd" value="气热" type="checkbox" style="checkbox"/>血热
+							<input name="maybesynd" value="血虚" type="checkbox" style="checkbox"/>血虚
+							<input name="maybesynd" value="血淤" type="checkbox" style="checkbox"/>血淤
+							<input name="maybesynd" value="血寒" type="checkbox" style="checkbox"/>血寒
+							<input name="maybesynd" value="血热" type="checkbox" style="checkbox"/>血热
 						</td>
 					</tr>
 					<tr >
@@ -196,6 +196,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								<option value="" selected="selected"/>
 								<option value="火">火</option>
 							</select>
+						</td>
+					</tr>
+					<tr>
+						<th>六经</th>
+						<td>
+							<input name="maybesynd" value="太阳证" type="checkbox" style="checkbox"/>太阳证
+							<input name="maybesynd" value="阳明证" type="checkbox" style="checkbox"/>阳明证
+							<input name="maybesynd" value="少阳证" type="checkbox" style="checkbox"/>少阳证
+							<input name="maybesynd" value="太阴证" type="checkbox" style="checkbox"/>太阴证
+							<input name="maybesynd" value="少阴证" type="checkbox" style="checkbox"/>少阴证
+							<input name="maybesynd" value="厥阴证" type="checkbox" style="checkbox"/>厥阴证
 						</td>
 					</tr>
 					<tr>

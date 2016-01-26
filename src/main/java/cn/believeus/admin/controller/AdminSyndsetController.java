@@ -179,12 +179,14 @@ public class AdminSyndsetController {
 	
 	@RequestMapping("/admin/syndset/deletemaybesynd")
 	public String deletemaybesynd(Integer id,String maybesynd){
-		Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class, id);
-		for(String synd: maybesynd.split(",")){
-			String result = syndset.getMaybesynd().replace(synd,"").replaceAll("\\s+"," ");
-			syndset.setMaybesynd(result.trim());
+		if(maybesynd!=null&&!"".equals(maybesynd)){
+			Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class, id);
+			for(String synd: maybesynd.split(",")){
+				String result = syndset.getMaybesynd().replace(synd,"").replaceAll("\\s+"," ");
+				syndset.setMaybesynd(result.trim());
+			}
+			mysqlService.saveOrUpdate(syndset);
 		}
-		mysqlService.saveOrUpdate(syndset);
-		return "redirect:/admin/syndset/editView.jhtml?id="+syndset.getId();
+		return "redirect:/admin/syndset/editView.jhtml?id="+id;
 	}
 }

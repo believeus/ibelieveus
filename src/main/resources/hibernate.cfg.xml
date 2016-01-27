@@ -48,6 +48,7 @@
 		<mapping class="cn.believeus.model.Tuser"/>
 		<mapping class="cn.believeus.model.Tsynd"/>
 		<mapping class="cn.believeus.model.Tsyndset"/>
+		<mapping class="cn.believeus.model.Tsyndkey"/>
 	</session-factory>
 
 </hibernate-configuration>

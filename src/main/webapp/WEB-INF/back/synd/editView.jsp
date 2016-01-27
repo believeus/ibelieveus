@@ -118,6 +118,7 @@ table.input th {
 			return false;
 		};
 		this.update=function(obj){
+			$(obj).parent().find("#tip").text("");
 			var id=$("#synd-id").val();
 			var newsynd=$(obj).parent().find("input[name='newsynd']").val();
 			var oldsynd=$(obj).parent().find("input[name='oldsynd']").val();

@@ -38,6 +38,7 @@ public class Tsyndset extends TbaseEntity {
 	private List<String> reflist=new ArrayList<String>();
 	private List<String> syndList=new ArrayList<String>();
 	private List<String>  referIds=new ArrayList<String>();
+	private List<String>  maybeList=new ArrayList<String>();
 
 	public String getCode() {
 		return code;
@@ -122,6 +123,21 @@ public class Tsyndset extends TbaseEntity {
 		this.referIds = referIds;
 	}
 
+	@Transient
+	public List<String> getMaybeList() {
+		  if(maybesynd!=null){
+			  return Arrays.asList(maybesynd.split("\\s+"));
+		  }
+		  return maybeList;
+	}
+
+	public void setMaybeList(List<String> maybeList) {
+		this.maybeList = maybeList;
+	}
+	
+	public String maybesyndReplace(String oldString,String newString){
+		return maybesynd.replace(oldString, newString).replaceAll("\\s+","");
+	}
 	
 	
 

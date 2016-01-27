@@ -224,22 +224,68 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</table>
 		</form>	
 		<c:if test="${!empty syndset.syndList }">
+		<script type="text/javascript">
+			var Synd=function(){
+				this.update=function(obj){
+					$(obj).parent().find("#msg").text("");
+					var maybesynd=$(obj).parent().parent().find("input[name='maybesynd']").val();
+					var syndpoint=$(obj).parent().find("input[name='syndpoint']").val();
+					if(syndpoint==""){
+						$(obj).parent().find("#msg").text("必填");
+					}
+					var data="maybesynd="+maybesynd+"&syndpoint="+syndpoint;
+					$.ajax({
+						type : "POST",
+						url : "/admin/syndset/saveSyndPoint.jhtml",
+						data : data,
+						success : function(html) {
+							if(html=="true"){
+								$(obj).parent().find("#msg").text("已更新");
+							}
+						}
+					});
+					
+				};
+			this.clear=function(obj){
+				var maybesynd=$(obj).parent().parent().find("input[name='synd']").val();
+				var syndsetId=$("#syndset-id").val();
+				var data="syndsetId="+syndsetId+"&maybesynd="+maybesynd;
+				alert(data);
+				$.ajax({
+					type : "POST",
+					url : "/admin/syndset/deletemaybesynd.jhtml",
+					data : data,
+					success : function(html) {
+						if(html=="true"){
+							$(obj).parent().parent().remove();
+						}
+					}
+				});
+			};
+			};
+		</script>
 		<hr>
 		<form action="/admin/syndset/deletemaybesynd.jhtml" method="post">
-		<input type="hidden" name="id" value="${syndset.id}"/>
-			<table class="input">
+		<input type="hidden" name="id" id="syndset-id" value="${syndset.id}"/>
+			<table class="input" style="width: 1000px;">
+				<tr>
+					<th>辩证要点:</th>
+					<td colspan="2">添加病证请用(,)逗号分割,&nbsp;&nbsp;(例如:发热,汗出)</td>
+				</tr>
+				<c:forEach items="${syndset.syndList}" var="maybesynd">
 				<tr>
 					<th>辩证病证:</th>
-				<td>
-					<c:forEach items="${syndset.syndList}" var="maybesynd">
-						<input type="checkbox" name="maybesynd" value="${maybesynd}" />:${maybesynd}
-					</c:forEach>
-				</td>
+					<td>
+						<input type="hidden" name="maybesynd" value="${maybesynd}" />:${maybesynd}
+					</td>
+					<td>
+						<input class="text" name="syndpoint"/>
+						<input type="button" id="update" class="button" value="更新" onclick="new Synd().update(this)"/>
+						<input type="button" id="update" class="button" value="删除" onclick="new Synd().clear(this)"/>
+						<span  id="msg"></span>
+					</td>
 				</tr>
-				<tr>
-					<th></th>
-					<td><input type="submit" class="button" value="删除"/></td>
-				</tr>
+				</c:forEach>
 			</table>
 		</form>
 		</c:if>

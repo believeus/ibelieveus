@@ -4,10 +4,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
@@ -32,15 +37,16 @@ public class Tsyndset extends TbaseEntity {
 	private String refer;
 	//可能的病证
 	private String  maybesynd;
+	private List<Tsyndkey> syndkeyList=new ArrayList<Tsyndkey>();
 	
 	// 病症描述
 	private String description;
 	private List<String> reflist=new ArrayList<String>();
-	private List<String> syndList=new ArrayList<String>();
 	private List<String>  referIds=new ArrayList<String>();
 	private List<String>  maybeList=new ArrayList<String>();
 
 	public String getCode() {
+		code=DigestUtils.md5Hex(synd);
 		return code;
 	}
 
@@ -51,9 +57,9 @@ public class Tsyndset extends TbaseEntity {
 	public String getSynd() {
 		return synd;
 	}
-
+	@Transient
 	public String getMaybesynd() {
-		return maybesynd;
+		return maybesynd.replaceAll(",", "");
 	}
 
 	public void setMaybesynd(String maybesynd) {
@@ -94,17 +100,6 @@ public class Tsyndset extends TbaseEntity {
 		this.reflist = reflist;
 	}
 
-	@Transient
-	public List<String> getSyndList() {
-		 if(maybesynd!=null){
-			 syndList=Arrays.asList(maybesynd.split("\\s+"));
-		 }
-		 return syndList;
-	}
-
-	public void setSyndList(List<String> syndList) {
-		this.syndList = syndList;
-	}
 	
 	@Transient
 	public List<String> getReferIds() {
@@ -121,6 +116,19 @@ public class Tsyndset extends TbaseEntity {
 
 	public void setReferIds(List<String> referIds) {
 		this.referIds = referIds;
+	}
+	@ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(
+            name="tsyndset_tsyndkey",
+            joinColumns=@JoinColumn(name="syndset_id"),
+            inverseJoinColumns=@JoinColumn(name="syndkey_id")
+    )
+	public List<Tsyndkey> getSyndkeyList() {
+		return syndkeyList;
+	}
+
+	public void setSyndkeyList(List<Tsyndkey> syndkeyList) {
+		this.syndkeyList = syndkeyList;
 	}
 
 	@Transient

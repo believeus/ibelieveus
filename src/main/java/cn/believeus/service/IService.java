@@ -13,6 +13,8 @@ public interface IService {
 	public abstract void delete(Class<?> clazz, List<?> ids);
 
 	public abstract void delete(Class<?> clazz, String property, Object value);
+	public abstract void delete(Class<?> clazz, Object property,
+			Object value1, Object property2, Object value2);
 
 
 	public abstract Object findObject(Class<?> clazz, Object property,

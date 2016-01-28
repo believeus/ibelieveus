@@ -22,6 +22,7 @@ import cn.believeus.PaginationUtil.PaginationUtil;
 import cn.believeus.model.Tsynd;
 import cn.believeus.model.Tsyndkey;
 import cn.believeus.model.Tsyndset;
+import cn.believeus.model.Tsyndset_Tsyndkey;
 import cn.believeus.service.IService;
 import cn.believeus.service.MySQLService;
 
@@ -78,13 +79,12 @@ public class AdminSyndsetController {
 	
 	@RequestMapping("/admin/syndset/save")
 	public String save(Tsyndset syndset){
-		String maybesynd=syndset.getMaybesynd().replaceAll(",", "");
-		String code=DigestUtils.md5Hex(syndset.getSynd());
-		if("".equals(maybesynd)){
-			maybesynd=null;
+		String maybesynd=syndset.getMaybesynd();
+		if(StringUtils.isNotEmpty(maybesynd)){
+			Tsyndkey syndkey=new Tsyndkey();
+			syndkey.setSynd(maybesynd);
+			syndset.getSyndkeyList().add(syndkey);
 		}
-		syndset.setMaybesynd(maybesynd);
-		syndset.setCode(code);
 		mysqlService.saveOrUpdate(syndset);
 		return "redirect:/admin/syndset/editView.jhtml?id="+syndset.getId();
 	}
@@ -167,36 +167,24 @@ public class AdminSyndsetController {
 	@RequestMapping("/admin/syndset/savesmaybesynd")
 	public String savesmaybesynd(Integer id,String maybesynd){
 		Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class, id);
-		if(maybesynd!=null){
+		
+		if(StringUtils.isNotEmpty(maybesynd)){
 			maybesynd=maybesynd.replaceAll(",", "");
-			if(syndset.getMaybesynd()!=null){
-				maybesynd=syndset.getMaybesynd()+" "+maybesynd;
+			String code=DigestUtils.md5Hex(maybesynd);
+			Tsyndkey syndkey=(Tsyndkey)mysqlService.findObject(Tsyndkey.class,"code", code);
+			if(syndkey==null){
+				syndkey=new Tsyndkey();
+				syndkey.setSynd(maybesynd);
+				syndset.getSyndkeyList().add(syndkey);
+				mysqlService.saveOrUpdate(syndset);
 			}
 		}
-		syndset.setMaybesynd(maybesynd+" ");
-		mysqlService.saveOrUpdate(syndset);
 		return "redirect:/admin/syndset/editView.jhtml?id="+syndset.getId();
 	}
 	
 	@RequestMapping("/admin/syndset/deletemaybesynd")
-	public String deletemaybesynd(Integer syndsetId,String maybesynd){
-		Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class, syndsetId);
-		syndset.setMaybesynd(syndset.maybesyndReplace(maybesynd.trim(),""));
-		mysqlService.saveOrUpdate(syndset);
+	public String deletemaybesynd(Integer syndsetId,String syndkeyId){
+		mysqlService.delete(Tsyndset_Tsyndkey.class, "syndset_id", syndsetId,"syndkey_id",syndkeyId);
 		return "true";
-	}
-	@RequestMapping("/admin/syndset/saveSyndPoint")
-	public @ResponseBody String saveSyndPoint(String maybesynd,String syndpoint){
-		String code=DigestUtils.md5Hex(maybesynd.trim());
-		Tsyndkey syndkey=(Tsyndkey)mysqlService.findObject(Tsyndkey.class,"code",code);
-		if(syndkey==null){
-			syndkey=new Tsyndkey();
-			syndkey.setCode(code);
-			syndkey.setSynd(maybesynd);
-		}
-		syndkey.setKeypoint(syndpoint);
-		mysqlService.saveOrUpdate(syndkey);
-		return "true";
-		
 	}
 }

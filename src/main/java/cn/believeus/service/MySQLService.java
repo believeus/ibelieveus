@@ -118,4 +118,11 @@ public class MySQLService implements IService{
 		return (Page<?>) ((MySQLDao)mysqlDao).getPageDateList(hql,pageable );
 	}
 
+	@Override
+	public void delete(Class<?> clazz, Object property1, Object value1,
+			Object property2, Object value2) {
+		((MySQLDao)mysqlDao).delete(clazz, property1, value1,property2,value2);
+		
+	}
+
 }

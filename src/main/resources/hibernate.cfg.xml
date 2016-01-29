@@ -49,7 +49,6 @@
 		<mapping class="cn.believeus.model.Tsynd"/>
 		<mapping class="cn.believeus.model.Tsyndset"/>
 		<mapping class="cn.believeus.model.Tsyndkey"/>
-		<mapping class="cn.believeus.model.Tsyndset_Tsyndkey"/>
 	</session-factory>
 
 </hibernate-configuration>

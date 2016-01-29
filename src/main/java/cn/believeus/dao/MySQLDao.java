@@ -2,16 +2,12 @@ package cn.believeus.dao;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Assert;

@@ -45,6 +45,11 @@ public class Tsyndkey extends TbaseEntity{
 	public void setSyndsetList(List<Tsyndset> syndsetList) {
 		this.syndsetList = syndsetList;
 	}
+	@Override
+	public String toString() {
+		return "Tsyndkey [synd=" + synd + ", code=" + code + ", keypoint="
+				+ keypoint + "]";
+	}
 	
 	
 }

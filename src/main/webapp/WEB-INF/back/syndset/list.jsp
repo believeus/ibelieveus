@@ -73,10 +73,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						${syndset.synd}
 					</td>
 					<td>
-						<c:forEach var="maybesynd" items="${syndset.maybeList}" varStatus="status">
+						<c:forEach var="syndkey" items="${syndset.syndkeyList}" varStatus="status">
 							<c:choose>
-								<c:when test="${status.index %4==3 }"><span style="color: green;text-decoration:underline">${maybesynd}</span><br/></c:when>
-								<c:otherwise><span style="color: green;text-decoration:underline">${maybesynd}</span></c:otherwise>
+								<c:when test="${status.index %4==3 }"><span style="color: green;text-decoration:underline">${syndkey.synd}</span><br/></c:when>
+								<c:otherwise><span style="color: green;text-decoration:underline">${syndkey.synd}</span></c:otherwise>
 							</c:choose>
 						</c:forEach>
 					</td>

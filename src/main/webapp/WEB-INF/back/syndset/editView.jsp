@@ -230,7 +230,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				var syndsetId=$("#syndset-id").val();
 				var syndkeyId=$(obj).parent().find("input[name='syndkey-id']").val();
 				var data="syndsetId="+syndsetId+"&syndkeyId="+syndkeyId;
-				alert(data);
 				$.ajax({
 					type : "POST",
 					url : "/admin/syndset/deletemaybesynd.jhtml",

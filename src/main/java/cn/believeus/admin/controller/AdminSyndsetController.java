@@ -22,7 +22,6 @@ import cn.believeus.PaginationUtil.PaginationUtil;
 import cn.believeus.model.Tsynd;
 import cn.believeus.model.Tsyndkey;
 import cn.believeus.model.Tsyndset;
-import cn.believeus.model.Tsyndset_Tsyndkey;
 import cn.believeus.service.IService;
 import cn.believeus.service.MySQLService;
 
@@ -175,16 +174,20 @@ public class AdminSyndsetController {
 			if(syndkey==null){
 				syndkey=new Tsyndkey();
 				syndkey.setSynd(maybesynd);
-				syndset.getSyndkeyList().add(syndkey);
-				mysqlService.saveOrUpdate(syndset);
 			}
+			syndset.getSyndkeyList().add(syndkey);
+			mysqlService.saveOrUpdate(syndset);
 		}
 		return "redirect:/admin/syndset/editView.jhtml?id="+syndset.getId();
 	}
 	
 	@RequestMapping("/admin/syndset/deletemaybesynd")
-	public String deletemaybesynd(Integer syndsetId,String syndkeyId){
-		mysqlService.delete(Tsyndset_Tsyndkey.class, "syndset_id", syndsetId,"syndkey_id",syndkeyId);
+	public @ResponseBody String deletemaybesynd(Integer syndsetId,Integer syndkeyId){
+		Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class,syndsetId);
+		Tsyndkey syndkey=(Tsyndkey)mysqlService.findObject(Tsyndkey.class, syndkeyId);
+		syndset.getSyndkeyList().remove(syndkey);
+		syndkey.getSyndsetList().remove(syndset);
+		mysqlService.saveOrUpdate(syndset);
 		return "true";
 	}
 }

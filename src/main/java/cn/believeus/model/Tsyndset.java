@@ -124,6 +124,7 @@ public class Tsyndset extends TbaseEntity {
             inverseJoinColumns=@JoinColumn(name="syndkey_id")
     )
 	public List<Tsyndkey> getSyndkeyList() {
+		System.out.println(syndkeyList);
 		return syndkeyList;
 	}
 
@@ -142,10 +143,16 @@ public class Tsyndset extends TbaseEntity {
 	public void setMaybeList(List<String> maybeList) {
 		this.maybeList = maybeList;
 	}
-	
-	public String maybesyndReplace(String oldString,String newString){
-		return maybesynd.replace(oldString, newString).replaceAll("\\s+","");
+
+	@Override
+	public String toString() {
+		return "Tsyndset [code=" + code + ", synd=" + synd + ", refer=" + refer
+				+ ", maybesynd=" + maybesynd + ", description=" + description
+				+ ", referIds=" + referIds + "]";
 	}
+
+	
+	
 	
 	
 

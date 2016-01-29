@@ -17,6 +17,7 @@ public class Tsyndkey extends TbaseEntity{
 	private String synd;
 	private String code;
 	private String keypoint;
+	private String description;
 	private List<Tsyndset> syndsetList=new ArrayList<Tsyndset>();
 	public String getSynd() {
 		return synd;
@@ -44,6 +45,14 @@ public class Tsyndkey extends TbaseEntity{
 	}
 	public void setSyndsetList(List<Tsyndset> syndsetList) {
 		this.syndsetList = syndsetList;
+	}
+	
+	
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	@Override
 	public String toString() {

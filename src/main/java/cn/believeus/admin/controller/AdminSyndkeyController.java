@@ -118,4 +118,9 @@ public class AdminSyndkeyController {
 		}
 		return "false";
 	}
+	@RequestMapping("/admin/syndkey/deleteById")
+	public String deleteById(Integer id){
+		mysqlService.delete(Tsyndkey.class, id);
+		return "redirect:/admin/syndkey/list.jhtml";
+	}
 }

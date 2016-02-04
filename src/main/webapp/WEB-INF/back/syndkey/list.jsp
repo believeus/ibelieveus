@@ -80,7 +80,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</td>
 					<td>
 						<a href="/admin/syndkey/editView.jhtml?id=${syndkey.id}">[编辑]</a>
-						<a href="/admin/syndset/delete.jhtml?id=${syndkey.id}">[删除]</a>
+						<a href="/admin/syndkey/deleteById.jhtml?id=${syndkey.id}">[删除]</a>
 					</td>
 				</tr>
 			</c:forEach>

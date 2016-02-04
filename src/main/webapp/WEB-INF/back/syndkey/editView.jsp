@@ -34,11 +34,60 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	});
  	var Tr=function(){
 		this.add=function(obj){
-			var tr="<tr><th>要点:</th><td><input name='keypoint' class='text'/><input value='删除' onclick='new Tr().clear(this)' style='margin-left:5px;' type='button' class='button'/></td></tr>";
+			var tr="<tr>"+
+					  "<th>辩证要点:</th>"+
+					  "<td>"+
+					  	"<input name='keypoint' class='text'/>"+
+						"<input value='删除' onclick='new Tr().clear(this)' style='margin-left:5px;' type='button' class='button'/>"+
+						"<input value='更新' type='button' class='button' onclick='new Tr().update(this)'/>"+
+						"<span id='msg'></span>"+
+					  "</td>"+
+					"</tr>";
 			$("#tr").after(tr);
 		};
 		this.clear=function(obj){
-			$(obj).parent().parent().remove();
+			$(obj).parent().find("span[id='msg']").text("");
+			var syndkeyId=$("#syndkeyId").val();
+			var keypoint=$(obj).parent().find("input[name='keypoint']").val();
+			if(keypoint!=""){
+				var data="id="+syndkeyId+"&keypoint="+keypoint;
+				$.ajax({
+					type : "POST",
+					url : "/admin/syndkey/delete.jhtml",
+					data : data,
+					success : function(result) {
+						if(result=='true'){
+							$(obj).parent().parent().remove();
+						}else{
+							$(obj).parent().find("span[id='msg']").text("删除失败");
+						}
+					}
+				}); 
+			}else{
+				$(obj).parent().parent().remove();
+			}
+		};
+		this.update=function(obj){
+			$(obj).parent().find("span[id='msg']").text("");
+			var syndkeyId=$("#syndkeyId").val();
+			var keypoint=$(obj).parent().find("input[name='keypoint']").val();
+			if(keypoint!=""){
+				var data="id="+syndkeyId+"&keypoint="+keypoint;
+				$.ajax({
+					type : "POST",
+					url : "/admin/syndkey/update.jhtml",
+					data : data,
+					success : function(result) {
+						if(result=='true'){
+							$(obj).parent().find("span[id='msg']").text("已更新");
+						}else{
+							$(obj).parent().find("span[id='msg']").text("已存在");
+						}
+					}
+				}); 
+			}else{
+				$(obj).parent().find("span[id='msg']").text("必填");
+			}
 		};
 	};
 	</script>
@@ -48,8 +97,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
      <div class="path">
 		<a href="/admin/manager.jhtml" target="_parent">内容管理</a> &raquo; 编辑病证
 	</div>
-	<form id="inputForm" action="/admin/syndset/update.jhtml" method="post" >
-		<input type="hidden" name="id" value="${syndkey.id }"/>
+	<form id="inputForm" action="/admin/syndkey/update.jhtml" method="post" >
+		<input type="hidden" name="id" id="syndkeyId" value="${syndkey.id }"/>
 		<table class="input">
 			<tr id="tr">
 				<th>
@@ -60,6 +109,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<input type="button" class="button" value="添加" onclick="new Tr().add(this)"/>
 				</td>
 			</tr>
+			<c:forEach items="${syndkey.syndsetList }" var="syndset">
+				<tr>
+				<th>辩证要点</th>
+				<td>
+					<input type="text" class="text" value="${syndset.synd }" name='keypoint'/>
+					<input value='删除' onclick="new Tr().clear(this)"  style="margin-left:2px;"  type="button" class="button"/>
+					<input value='更新' onclick="new Tr().update(this)" style="margin-left:-4px;" type="button" class="button"  />
+				</td>
+				</tr>
+			</c:forEach>
 			<tr>
 				<th>
 					病症解释:

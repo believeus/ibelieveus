@@ -2,15 +2,20 @@ package cn.believeus.controller;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import cn.believeus.PaginationUtil.Page;
+import cn.believeus.PaginationUtil.Pageable;
 import cn.believeus.model.Tsynd;
 import cn.believeus.model.Tsyndset;
+import cn.believeus.model.Tuser;
 import cn.believeus.service.IService;
+import cn.believeus.service.MySQLService;
 
 
 @Controller
@@ -26,6 +31,12 @@ public class ControllerIndex {
 			return loadsynd.toString();
 		}
 		
+	}
+	
+	@RequestMapping("/getUser")
+	public @ResponseBody String getUser(int id){
+		Tuser user=(Tuser)mysqlService.findObject(Tuser.class, id);
+		return user.toString().replaceAll("\\[|\\]","");
 	}
 	
 	//加载数据

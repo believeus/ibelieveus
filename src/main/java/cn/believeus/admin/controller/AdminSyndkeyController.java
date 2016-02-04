@@ -3,15 +3,18 @@ package cn.believeus.admin.controller;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import cn.believeus.PaginationUtil.Page;
 import cn.believeus.PaginationUtil.Pageable;
 import cn.believeus.PaginationUtil.PaginationUtil;
 import cn.believeus.model.Tsyndkey;
+import cn.believeus.model.Tsyndset;
 import cn.believeus.service.IService;
 import cn.believeus.service.MySQLService;
 
@@ -47,5 +50,36 @@ public class AdminSyndkeyController {
 		modelView.addObject("syndkey", syndkey);
 		modelView.setViewName("/WEB-INF/back/syndkey/editView.jsp");
 		return modelView;
+	}
+	
+	@RequestMapping("/admin/syndkey/update")
+	public @ResponseBody String update(Integer id,String keypoint){
+		Tsyndkey syndkey=(Tsyndkey)mysqlService.findObject(Tsyndkey.class, id);
+		String code=DigestUtils.md5Hex(keypoint.trim());
+		for(Tsyndset syndset:syndkey.getSyndsetList()){
+			if(syndset.getCode().equals(code)){
+				return "false";
+			}
+		}
+		Tsyndset syndset=new Tsyndset();
+		syndset.setCode(code);
+		syndset.setSynd(keypoint);
+		syndset.getSyndkeyList().add(syndkey);
+		mysqlService.saveOrUpdate(syndset);
+		return "true";
+	}
+	
+	@RequestMapping("/admin/syndkey/delete")
+	public @ResponseBody String delete(Integer id,String keypoint){
+		Tsyndkey syndkey=(Tsyndkey)mysqlService.findObject(Tsyndkey.class, id);
+		String code=DigestUtils.md5Hex(keypoint.trim());
+		for(Tsyndset syndset:syndkey.getSyndsetList()){
+			if(syndset.getCode().equals(code)){
+				syndset.getSyndkeyList().remove(syndkey);
+				mysqlService.saveOrUpdate(syndset);
+				return "true";
+			}
+		}
+		return "false";
 	}
 }

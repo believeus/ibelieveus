@@ -43,6 +43,42 @@ public class AdminSyndkeyController {
 		modelView.setViewName(viewName);
 		return modelView;
 	}
+	
+	@RequestMapping("/admin/syndkey/addView")
+	public ModelAndView addView(){
+		ModelAndView modelView=new ModelAndView();
+		modelView.setViewName("/WEB-INF/back/syndkey/addView.jsp");
+		return modelView;
+	}
+	@RequestMapping("/admin/syndkey/save")
+	public String save(String synd,String keypoint){
+		String code=DigestUtils.md5Hex(synd.trim());
+		Tsyndkey syndkey=(Tsyndkey)mysqlService.findObject(Tsyndkey.class, "code", code);
+		if(syndkey==null){
+			syndkey=new Tsyndkey();
+			syndkey.setCode(code);
+			syndkey.setSynd(synd);
+			
+			Tsyndset syndset=new Tsyndset();
+			syndset.setCode(DigestUtils.md5Hex(keypoint.trim()));
+			syndset.setSynd(keypoint);
+			
+			syndset.getSyndkeyList().add(syndkey);
+			mysqlService.saveOrUpdate(syndset);
+		}
+		return "redirect:/admin/syndkey/editView.jhtml?id="+syndkey.getId();
+	}
+	
+	@RequestMapping("/admin/syndkey/ajaxSynd")
+	public @ResponseBody String ajaxSynd(String synd){
+		String code=DigestUtils.md5Hex(synd.trim());
+		Tsyndkey syndkey=(Tsyndkey)mysqlService.findObject(Tsyndkey.class, "code", code);
+		if(syndkey!=null){
+			return syndkey.getId()+"";
+		}
+		return "false";
+	}
+	
 	@RequestMapping("/admin/syndkey/editView")
 	public ModelAndView editView(Integer id){
 		ModelAndView modelView=new ModelAndView();
@@ -76,7 +112,7 @@ public class AdminSyndkeyController {
 		for(Tsyndset syndset:syndkey.getSyndsetList()){
 			if(syndset.getCode().equals(code)){
 				syndset.getSyndkeyList().remove(syndkey);
-				mysqlService.saveOrUpdate(syndset);
+				mysqlService.delete(syndkey);
 				return "true";
 			}
 		}

@@ -124,7 +124,6 @@ public class Tsyndset extends TbaseEntity {
             inverseJoinColumns=@JoinColumn(name="syndkey_id")
     )
 	public List<Tsyndkey> getSyndkeyList() {
-		System.out.println(syndkeyList);
 		return syndkeyList;
 	}
 

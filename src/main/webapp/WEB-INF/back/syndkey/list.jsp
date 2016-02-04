@@ -34,7 +34,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div>
 	<div>
 		<div class="bar">
-		<a href="/admin/syndset/addView.jhtml" class="iconButton">
+		<a href="/admin/syndkey/addView.jhtml" class="iconButton">
 				<span class="addIcon">&nbsp;</span>添加
 			</a>
 		<div class="buttonWrap">
@@ -70,7 +70,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						${syndkey.synd}
 					</td>
 					<td>
-						${syndkey.keypoint}
+						<c:forEach items="${syndkey.syndsetList}" var="syndset">
+							${syndset.synd}
+						</c:forEach>
+						
 					</td>
 					<td>
 						${syndkey.description}

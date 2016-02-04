@@ -134,7 +134,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</th>
 				<td colspan="3">
 					<input type="submit" class="button" value="确定" />
-					<input type="button" class="button" value="返回" onclick="javascript:window.location.href='/admin/syndset/list.jhtml'"/>
+					<input type="button" class="button" value="返回" onclick="javascript:window.location.href='/admin/syndkey/list.jhtml'"/>
 				</td>
 			</tr>
 		</table>

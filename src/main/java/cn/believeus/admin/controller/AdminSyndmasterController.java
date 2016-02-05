@@ -14,7 +14,7 @@ import cn.believeus.PaginationUtil.Page;
 import cn.believeus.PaginationUtil.Pageable;
 import cn.believeus.PaginationUtil.PaginationUtil;
 import cn.believeus.model.TsyndMaster;
-import cn.believeus.model.Tsyndset;
+import cn.believeus.model.TsyndMajor;
 import cn.believeus.service.IService;
 import cn.believeus.service.MySQLService;
 
@@ -51,7 +51,7 @@ public class AdminSyndmasterController {
 		return modelView;
 	}
 	@RequestMapping("/admin/syndmaster/save")
-	public String save(String synd,String syndmaster,String pulse){
+	public String save(String synd,String syndmajor,String pulse){
 		String code=DigestUtils.md5Hex(synd.trim());
 		TsyndMaster master=(TsyndMaster)mysqlService.findObject(TsyndMaster.class, "code", code);
 		if(master==null){
@@ -59,12 +59,13 @@ public class AdminSyndmasterController {
 			master.setCode(code);
 			master.setSynd(synd);
 			master.setPulse(pulse.trim());
-			Tsyndset syndset=new Tsyndset();
-			syndset.setCode(DigestUtils.md5Hex(syndmaster.trim()));
-			syndset.setSynd(syndmaster);
-			
-			syndset.getSyndmasters().add(master);
-			mysqlService.saveOrUpdate(syndset);
+			TsyndMajor major=new TsyndMajor();
+			if(syndmajor!=null){
+				major.setCode(DigestUtils.md5Hex(syndmajor.trim()));
+				major.setSynd(syndmajor);
+			}
+			master.getSyndmajors().add(major);
+			mysqlService.saveOrUpdate(master);
 		}
 		return "redirect:/admin/syndmaster/editView.jhtml?id="+master.getId();
 	}
@@ -104,16 +105,16 @@ public class AdminSyndmasterController {
 	public @ResponseBody String update(Integer id,String syndmaster){
 		TsyndMaster master=(TsyndMaster)mysqlService.findObject(TsyndMaster.class, id);
 		String code=DigestUtils.md5Hex(syndmaster.trim());
-		for(Tsyndset syndset:master.getSyndsets()){
-			if(syndset.getCode().equals(code)){
+		for(TsyndMajor syndmajor:master.getSyndmajors()){
+			if(syndmajor.getCode().equals(code)){
 				return "false";
 			}
 		}
-		Tsyndset syndset=new Tsyndset();
-		syndset.setCode(code);
-		syndset.setSynd(syndmaster);
-		syndset.getSyndmasters().add(master);
-		mysqlService.saveOrUpdate(syndset);
+		TsyndMajor syndmajor=new TsyndMajor();
+		syndmajor.setCode(code);
+		syndmajor.setSynd(syndmaster);
+		master.getSyndmajors().add(syndmajor);
+		mysqlService.saveOrUpdate(master);
 		return "true";
 	}
 	
@@ -121,10 +122,11 @@ public class AdminSyndmasterController {
 	public @ResponseBody String delete(Integer id,String syndmaster){
 		TsyndMaster master=(TsyndMaster)mysqlService.findObject(TsyndMaster.class, id);
 		String code=DigestUtils.md5Hex(syndmaster.trim());
-		for(Tsyndset syndset:master.getSyndsets()){
-			if(syndset.getCode().equals(code)){
-				syndset.getSyndmasters().remove(master);
-				mysqlService.delete(master);
+		for(TsyndMajor syndmajor:master.getSyndmajors()){
+			if(syndmajor.getCode().equals(code)){
+				master.getSyndmajors().remove(syndmajor);
+				mysqlService.saveOrUpdate(master);
+				mysqlService.delete(syndmajor);
 				return "true";
 			}
 		}
@@ -135,4 +137,6 @@ public class AdminSyndmasterController {
 		mysqlService.delete(TsyndMaster.class, id);
 		return "redirect:/admin/syndmaster/list.jhtml";
 	}
+	
+	
 }

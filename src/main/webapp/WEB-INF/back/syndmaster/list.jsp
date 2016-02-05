@@ -73,8 +73,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						${syndmaster.synd}
 					</td>
 					<td>
-						<c:forEach items="${syndmaster.syndsets}" var="syndset">
-							${syndset.synd}
+						<c:forEach items="${syndmaster.syndmajors}" var="syndmajor">
+							${syndmajor.synd}
 						</c:forEach>
 					</td>
 					<td>${syndmaster.pulse}</td>
@@ -90,7 +90,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</table>
 	</div>
 	<div>
-		<form action="/admin/syndset/list.jhtml" id="listForm">
+		<form action="/admin/syndmajor/list.jhtml" id="listForm">
 			<jsp:include page="../include/pagination.jsp" flush="true" />
 		</form>
 	</div>

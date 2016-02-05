@@ -28,7 +28,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				 synd:{
 					  required: true,
 					  remote: {
-	                        url: "/admin/syndset/ajaxsynd.jhtml",
+	                        url: "/admin/syndmajor/ajaxsynd.jhtml",
 	                        type: "POST",
 	                        data: {
 	                        	synd: function () {
@@ -53,7 +53,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
      <div class="path">
 		<a href="/admin/manager.jhtml" target="_parent">内容管理</a> &raquo; 编辑病症
 	</div>
-	<form id="inputForm" action="/admin/syndset/save.jhtml" method="post" >
+	<form id="inputForm" action="/admin/syndmajor/save.jhtml" method="post" >
 		<table class="input">
 			<tr>
 				<th>

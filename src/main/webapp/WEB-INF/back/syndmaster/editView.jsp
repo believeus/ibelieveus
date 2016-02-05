@@ -53,16 +53,56 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
  	var Tr=function(){
 		this.addmaster=function(obj){
 			var tr="<tr>"+
-					  "<th>辩证要点:</th>"+
+					  "<th>主证</th>"+
 					  "<td>"+
 					  	"<input name='syndmaster' class='text'/>"+
 						"<input value='删除' onclick='new Tr().clearmaster(this)' style='margin-left:5px;' type='button' class='button'/>"+
-						"<input value='更新' type='button' class='button' onclick='new Tr().update(this)'/>"+
+						"<input value='更新' type='button' class='button' onclick='new Tr().updatemaster(this)'/>"+
 						"<span id='msg'></span>"+
 					  "</td>"+
 					"</tr>";
 			$("#tr").after(tr);
 		};
+		this.addslave=function(obj){
+			var tr="<tr>"+
+			  "<th>从症</th>"+
+			  "<td>"+
+			  	"<input name='syndslave' class='text'/>"+
+				"<input value='删除' onclick='new Tr().clearslave(this)' style='margin-left:5px;' type='button' class='button'/>"+
+				"<input value='更新' type='button' class='button' onclick='new Tr().updateslave(this)'/>"+
+				"<span id='msg'></span>"+
+			  "</td>"+
+			"</tr>";
+			$("#trP").after(tr);
+		};
+		
+		
+		this.updateslave=function(obj){
+			
+		};
+		this.clearslave=function(obj){
+			$(obj).parent().find("span[id='msg']").text("");
+			var syndmasterId=$("#syndmasterId").val();
+			var syndslave=$(obj).parent().find("input[name='syndslave']").val();
+			if(syndslave!=""){
+				var data="id="+syndmasterId+"&syndslave="+syndslave;
+				$.ajax({
+					type : "POST",
+					url : "/admin/syndslave/delete.jhtml",
+					data : data,
+					success : function(result) {
+						if(result=='true'){
+							$(obj).parent().parent().remove();
+						}else{
+							$(obj).parent().find("span[id='msg']").text("删除失败");
+						}
+					}
+				}); 
+			}else{
+				$(obj).parent().parent().remove();
+			}
+		};
+		
 		this.clearmaster=function(obj){
 			$(obj).parent().find("span[id='msg']").text("");
 			var syndmasterId=$("#syndmasterId").val();
@@ -85,7 +125,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				$(obj).parent().parent().remove();
 			}
 		};
-		this.update=function(obj){
+		this.updatemaster=function(obj){
 			$(obj).parent().find("span[id='msg']").text("");
 			var syndmasterId=$("#syndmasterId").val();
 			var syndmaster=$(obj).parent().find("input[name='syndmaster']").val();
@@ -99,7 +139,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						if(result=='true'){
 							$(obj).parent().find("span[id='msg']").text("已更新");
 						}else{
-							$(obj).parent().find("span[id='msg']").text("已存在");
+							$(obj).parent().find("span[id='msg']").text("该病症已存在，请填写其他病症️");
 						}
 					}
 				}); 
@@ -126,20 +166,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<td>
 					<input type="text" id="synd" class="text" name="synd" value="${syndmaster.synd }"/>
 					<input type="button" class="button" value="添加主证" onclick="new Tr().addmaster(this)"/>
-					<input type="button" class="button" value="添加从证" onclick="new Tr().addslave(this)"/>
 				</td>
 			</tr>
-			<c:forEach items="${syndmaster.syndsets }" var="syndset">
+			<c:forEach items="${syndmaster.syndmajors }" var="syndmajor">
 				<tr>
-				<th>辩证要点</th>
+				<th>主证</th>
 				<td>
-					<input type="text" class="text" value="${syndset.synd }" name='syndmaster'/>
+					<input type="text" class="text" value="${syndmajor.synd }" name='syndmaster'/>
 					<input value='删除' onclick="new Tr().clearmaster(this)"  style="margin-left:2px;"  type="button" class="button"/>
 					<input value='更新' onclick="new Tr().update(this)" style="margin-left:-4px;" type="button" class="button"  />
 				</td>
 				</tr>
 			</c:forEach>
-			<tr>
+			<tr id="trP">
 				<th>脉象</th>
 				<td>
 					<select class="select" name="pulse">
@@ -172,9 +211,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						 <option value="结脉">结 脉</option>
 						 <option value="代脉">代 脉</option>
 					</select>
+					<input type="button" class="button" value="添加从证" onclick="new Tr().addslave(this)"/>
 					<span id="pulseMsg"></span>
 				</td>
-				
 			</tr>
 			<tr>
 				<th>

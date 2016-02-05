@@ -34,7 +34,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div>
 	<div>
 		<div class="bar">
-		<a href="/admin/syndset/addView.jhtml" class="iconButton">
+		<a href="/admin/syndmajor/addView.jhtml" class="iconButton">
 				<span class="addIcon">&nbsp;</span>添加
 			</a>
 		<div class="buttonWrap">
@@ -64,16 +64,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<a href="#"  class="sort">编辑</a>
 				</th>
 			</tr>
-			<c:forEach var="syndset" items="${page.content}" varStatus="status">
+			<c:forEach var="syndmajor" items="${page.content}" varStatus="status">
 				<tr>
 					<td>
-						<input type="checkbox" name="ids" value="${syndset.id}" />
+						<input type="checkbox" name="ids" value="${syndmajor.id}" />
 					</td>
 					<td>
-						${syndset.synd}
+						${syndmajor.synd}
 					</td>
 					<td>
-						<c:forEach var="syndmaster" items="${syndset.syndmasters}" varStatus="status">
+						<c:forEach var="syndmaster" items="${syndmajor.syndmasters}" varStatus="status">
 							<c:choose>
 								<c:when test="${status.index %4==3 }"><span style="color: green;text-decoration:underline">${syndmaster.synd}</span><br/></c:when>
 								<c:otherwise><span style="color: green;text-decoration:underline">${syndmaster.synd}</span></c:otherwise>
@@ -81,21 +81,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</c:forEach>
 					</td>
 					<td>
-						${syndset.description}
+						${syndmajor.description}
 					</td>
 					<td>
-						${syndset.refer}
+						${syndmajor.refer}
 					</td>
 					<td>
-						<a href="/admin/syndset/editView.jhtml?id=${syndset.id}">[编辑]</a>
-						<a href="/admin/syndset/delete.jhtml?id=${syndset.id}">[删除]</a>
+						<a href="/admin/syndmajor/editView.jhtml?id=${syndmajor.id}">[编辑]</a>
+						<a href="/admin/syndmajor/delete.jhtml?id=${syndmajor.id}">[删除]</a>
 					</td>
 				</tr>
 			</c:forEach>
 		</table>
 	</div>
 	<div>
-		<form action="/admin/syndset/list.jhtml" id="listForm">
+		<form action="/admin/syndmajor/list.jhtml" id="listForm">
 			<jsp:include page="../include/pagination.jsp" flush="true" />
 		</form>
 	</div>

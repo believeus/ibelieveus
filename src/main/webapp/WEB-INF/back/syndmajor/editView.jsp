@@ -39,16 +39,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
      <div class="path">
 		<a href="/admin/manager.jhtml" target="_parent">内容管理</a> &raquo; 编辑病症
 	</div>
-	<form id="inputForm" action="/admin/syndset/update.jhtml" method="post" >
-		<input type="hidden" name="id" value="${syndset.id }"/>
-		<input type="hidden" name="hiddensynd" value="${syndset.synd }"/>
+	<form id="inputForm" action="/admin/syndmajor/update.jhtml" method="post" >
+		<input type="hidden" name="id" value="${syndmajor.id }"/>
+		<input type="hidden" name="hiddensynd" value="${syndmajor.synd }"/>
 		<table class="input">
 			<tr>
 				<th>
 					病症:
 				</th>
 				<td>
-					<input type="text" id="synd" class="text" name="synd" value="${syndset.synd }"/>
+					<input type="text" id="synd" class="text" name="synd" value="${syndmajor.synd }"/>
 				</td>
 			</tr>
 			<tr>
@@ -56,7 +56,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					病症解释:
 				</th>
 				<td>
-					<input type="text" name="description" class="text" style="width: 500px;" value="${syndset.description}"/>
+					<input type="text" name="description" class="text" style="width: 500px;" value="${syndmajor.description}"/>
 				</td>
 			</tr>
 			
@@ -66,20 +66,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</th>
 				<td colspan="3">
 					<input type="submit" class="button" value="确定" />
-					<input type="button" class="button" value="返回" onclick="javascript:window.location.href='/admin/syndset/list.jhtml'"/>
+					<input type="button" class="button" value="返回" onclick="javascript:window.location.href='/admin/syndmajor/list.jhtml'"/>
 				</td>
 			</tr>
 		</table>
 		</form>
-		<c:if test="${!empty syndset.reflist}">
+		<c:if test="${!empty syndmajor.reflist}">
 		<hr>
-		<form action="/admin/syndset/deleteRef.jhtml" method="post">
-		<input type="hidden"  name="id" value="${syndset.id }"/>
+		<form action="/admin/syndmajor/deleteRef.jhtml" method="post">
+		<input type="hidden"  name="id" value="${syndmajor.id }"/>
 		<table class="input">
 			<tr>
 				<th>关联病证</th>
 				<td>
-					<c:forEach items="${syndset.reflist}" var="refer" varStatus="status" >
+					<c:forEach items="${syndmajor.reflist}" var="refer" varStatus="status" >
 						<c:if test="${!empty refer}">
 							<c:choose>
 								<c:when test="${status.index % 5==4}"><input type="checkbox" class="checkout" name="refers" value="${refer}"/>${refer}<br></c:when>
@@ -91,13 +91,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</tr>
 		  <tr>
 		  	<th></th>
-		  	<td><input type="submit" class="button" value="删除" /><input type="button" class="button" value="返回" onclick="javascript:window.location.href='/admin/syndset/list.jhtml'"/></td>
+		  	<td><input type="submit" class="button" value="删除" /><input type="button" class="button" value="返回" onclick="javascript:window.location.href='/admin/syndmajor/list.jhtml'"/></td>
 		  </tr>
 		</table>
 	</form>
 	</c:if>
-		<form  method="post" action="/admin/syndset/savesmaybesynd.jhtml">
-			<input type="hidden" name="id" value="${syndset.id }"/>
+		<form  method="post" action="/admin/syndmajor/savesmaybesynd.jhtml">
+			<input type="hidden" name="id" value="${syndmajor.id }"/>
 			<hr>
 				<table class="input">
 					<tr>
@@ -223,16 +223,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</tr>
 				</table>
 		</form>	
-		<c:if test="${!empty syndset.syndkeyList }">
+		<c:if test="${!empty syndmajor.syndmasters }">
 		<script type="text/javascript">
 			var Synd=function(){
 			this.clear=function(obj){
-				var syndsetId=$("#syndset-id").val();
-				var syndkeyId=$(obj).parent().find("input[name='syndkey-id']").val();
-				var data="syndsetId="+syndsetId+"&syndkeyId="+syndkeyId;
+				var syndmajorId=$("#syndmajor-id").val();
+				var syndmasterId=$(obj).parent().find("input[name='syndmaster-id']").val();
+				var data="syndmajorId="+syndmajorId+"&syndmasterId="+syndmasterId;
 				$.ajax({
 					type : "POST",
-					url : "/admin/syndset/deletemaybesynd.jhtml",
+					url : "/admin/syndmajor/deletemaybesynd.jhtml",
 					data : data,
 					success : function(html) {
 						if(html=="true"){
@@ -245,22 +245,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</script>
 		<hr>
 		<form action="#" method="post">
-		<input type="hidden" name="id" id="syndset-id" value="${syndset.id}"/>
+		<input type="hidden" name="id" id="syndmajor-id" value="${syndmajor.id}"/>
 			<table class="input" style="width: 1000px;">
 				<tr>
 					<th>病证:</th>
 					<td></td>
 					<td>辩证要点</td>
 				</tr>
-				<c:forEach items="${syndset.syndkeyList}" var="syndkey">
+				<c:forEach items="${syndmajor.syndmasters}" var="syndmaster">
 				<tr>
 					<th>可能病证:</th>
 					<td>
-						<input type="hidden" name="maybesynd" value="${syndkey.synd}" />:${syndkey.synd}
+						<input type="hidden" name="maybesynd" value="${syndmaster.synd}" />:${syndmaster.synd}
 					</td>
 					<td>
-						<input type="hidden" name="syndkey-id" value="${syndkey.id}"/>
-						<input class="text" name="syndpoint" readonly="readonly" value="${syndkey.keypoint}"/>
+						<input type="hidden" name="syndmaster-id" value="${syndmaster.id}"/>
+						<c:forEach items="${syndmaster.syndmajors }" var="syndmajor">
+							<input class="text" name="syndpoint" readonly="readonly" style="width: 70px;" value="${syndmajor.synd}"/>
+						</c:forEach>
+						
 						<input type="button" id="update" class="button" value="删除" onclick="new Synd().clear(this)"/>
 						<span  id="msg"></span>
 					</td>

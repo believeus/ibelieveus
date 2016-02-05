@@ -81,7 +81,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</tr>
 			<tr>
 				<th>辩证要点</th>
-				<td><input name="syndmaster" class="text"/></td>
+				<td><input name="syndmajor" class="text"/></td>
 			</tr>
 			<tr>
 				<th>脉象</th>

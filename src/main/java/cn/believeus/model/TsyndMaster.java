@@ -5,12 +5,14 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
-/**主症／本症*/
+/**证*/
 @Entity
 @Table
 public class TsyndMaster extends TbaseEntity{
@@ -20,7 +22,10 @@ public class TsyndMaster extends TbaseEntity{
 	//脉象
 	private String  pulse;
 	private String description;
-	private List<Tsyndset> syndsets=new ArrayList<Tsyndset>();
+	//主证
+	private List<TsyndMajor> syndmajors=new ArrayList<TsyndMajor>();
+	//从证
+	private List<TsyndMinor> syndminors=new ArrayList<TsyndMinor>();
 	public String getSynd() {
 		return synd;
 	}
@@ -36,12 +41,30 @@ public class TsyndMaster extends TbaseEntity{
 	}
 	
 	
-	@ManyToMany(mappedBy="syndmasters",cascade=CascadeType.ALL)
-	public List<Tsyndset> getSyndsets() {
-		return syndsets;
+	@ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(
+            name="tsyndmaster_tsyndmajors",
+            joinColumns=@JoinColumn(name="syndmaster_id"),
+            inverseJoinColumns=@JoinColumn(name="syndmajors_id")
+    )
+	public List<TsyndMajor> getSyndmajors() {
+		return syndmajors;
 	}
-	public void setSyndsets(List<Tsyndset> syndsets) {
-		this.syndsets = syndsets;
+	public void setSyndmajors(List<TsyndMajor> syndmajors) {
+		this.syndmajors = syndmajors;
+	}
+
+	@ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(
+            name="tsyndmaster_tsyndminors",
+            joinColumns=@JoinColumn(name="syndmaster_id"),
+            inverseJoinColumns=@JoinColumn(name="syndminors_id")
+    )
+	public List<TsyndMinor> getSyndminors() {
+		return syndminors;
+	}
+	public void setSyndminors(List<TsyndMinor> syndminors) {
+		this.syndminors = syndminors;
 	}
 	
 	public String getDescription() {
@@ -60,5 +83,6 @@ public class TsyndMaster extends TbaseEntity{
 	public void setPulse(String pulse) {
 		this.pulse = pulse;
 	}
+	
 	
 }

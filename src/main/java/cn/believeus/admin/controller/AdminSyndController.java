@@ -21,7 +21,7 @@ import cn.believeus.PaginationUtil.Page;
 import cn.believeus.PaginationUtil.Pageable;
 import cn.believeus.PaginationUtil.PaginationUtil;
 import cn.believeus.model.Tsynd;
-import cn.believeus.model.Tsyndset;
+import cn.believeus.model.TsyndMajor;
 import cn.believeus.service.IService;
 import cn.believeus.service.MySQLService;
 
@@ -73,14 +73,14 @@ public class AdminSyndController {
 		String[] synds = synd.getSynd().split("\\s+");
 		for (String syndname : synds) {
 			String code = DigestUtils.md5Hex(syndname.trim());
-			Tsyndset syndset = (Tsyndset)mysqlService.findObject(Tsyndset.class,"code", code);
+			TsyndMajor syndset = (TsyndMajor)mysqlService.findObject(TsyndMajor.class,"code", code);
 			if(syndset!=null){
 				String refer = syndset.getRefer();
 				refer+=" ["+synd.getId()+":"+synd.getTitle()+"]";
 				log.debug("refer:"+refer);
 				syndset.setRefer(refer);
 			}else {
-				syndset=new Tsyndset();
+				syndset=new TsyndMajor();
 				String refer=synd.getId()+":"+synd.getTitle();
 				syndset.setRefer(" ["+refer+"]");
 				syndset.setCode(code);
@@ -110,9 +110,9 @@ public class AdminSyndController {
 			}
 			mysqlService.saveOrUpdate(tsynd);
 			String code=DigestUtils.md5Hex(oldsynd.trim());
-			Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class, "code", code);
+			TsyndMajor syndset=(TsyndMajor)mysqlService.findObject(TsyndMajor.class, "code", code);
 			if(syndset==null){
-				syndset=new Tsyndset();
+				syndset=new TsyndMajor();
 				String refer=tsynd.getId()+":"+tsynd.getTitle();
 				syndset.setRefer(" ["+refer+"]");
 				code=DigestUtils.md5Hex(newsynd.trim());
@@ -141,9 +141,9 @@ public class AdminSyndController {
 		Tsynd synd = (Tsynd)mysqlService.findObject(Tsynd.class, id);
 		String value=synd.getTitle().trim();
 		@SuppressWarnings("unchecked")  
-		List<Tsyndset> syndsetList = (List<Tsyndset>) ((MySQLService) mysqlService).findObjecList(Tsyndset.class, "refer", value);
+		List<TsyndMajor> syndsetList = (List<TsyndMajor>) ((MySQLService) mysqlService).findObjecList(TsyndMajor.class, "refer", value);
 		log.info("hibernate search:"+syndsetList.size());
-		for (Tsyndset tsyndset : syndsetList) {
+		for (TsyndMajor tsyndset : syndsetList) {
 			String refer = tsyndset.getRefer();
 			log.info("begin refer:"+refer);
 			refer = refer.replace("[" + id + ":" + value + "]", "");
@@ -160,8 +160,8 @@ public class AdminSyndController {
 		StringBuilder sb=new StringBuilder();
 		if(StringUtils.isNotEmpty(keywords)){
 			@SuppressWarnings("unchecked")
-			List<Tsyndset> syndset = (List<Tsyndset>) ((MySQLService)mysqlService).findObjecList(Tsyndset.class, "synd", keywords);
-			for (Tsyndset synd : syndset) {
+			List<TsyndMajor> syndset = (List<TsyndMajor>) ((MySQLService)mysqlService).findObjecList(TsyndMajor.class, "synd", keywords);
+			for (TsyndMajor synd : syndset) {
 				sb.append("<span>").append(synd.getSynd()).append("</span><br>");
 			}
 		}
@@ -172,7 +172,7 @@ public class AdminSyndController {
 	public @ResponseBody String delete(Integer id,String syndname){
 		if(StringUtils.isNotEmpty(syndname)){
 			String code=DigestUtils.md5Hex(syndname.trim());
-			Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class, "code", code);
+			TsyndMajor syndset=(TsyndMajor)mysqlService.findObject(TsyndMajor.class, "code", code);
 			if(syndset!=null){
 				if(StringUtils.isNotEmpty(syndset.getRefer())){
 					Tsynd synd=(Tsynd)mysqlService.findObject(Tsynd.class, id);

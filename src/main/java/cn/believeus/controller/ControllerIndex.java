@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.believeus.PaginationUtil.Page;
 import cn.believeus.PaginationUtil.Pageable;
 import cn.believeus.model.Tsynd;
-import cn.believeus.model.Tsyndset;
+import cn.believeus.model.TsyndMajor;
 import cn.believeus.model.Tuser;
 import cn.believeus.service.IService;
 import cn.believeus.service.MySQLService;
@@ -43,7 +43,7 @@ public class ControllerIndex {
 	public Map<String, String> loadData(String syndcode){
 		//加载数据
 		 Map<String, String> usersynd = new HashMap<String, String>();
-			Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class,"code", syndcode);
+			TsyndMajor syndset=(TsyndMajor)mysqlService.findObject(TsyndMajor.class,"code", syndcode);
 			if(syndset!=null){
 				String[] refers = syndset.getRefer().split("\\s+");
 				if (refers != null && refers.length != 0) {

@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -21,12 +18,12 @@ import org.hibernate.search.annotations.Store;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
 
-//病症集合
+/**主证*/
 @Entity
 @Table
 @Indexed
 @Analyzer(impl=IKAnalyzer.class)
-public class Tsyndset extends TbaseEntity {
+public class TsyndMajor extends TbaseEntity {
 
 	private static final long serialVersionUID = 1277405498002545695L;
 	// 疾病编号
@@ -39,7 +36,6 @@ public class Tsyndset extends TbaseEntity {
 	private String  maybesynd;
 
 	private List<TsyndMaster> syndmasters=new ArrayList<TsyndMaster>();
-	private List<TsyndSlave> syndslaves=new ArrayList<TsyndSlave>();
 	// 病症描述
 	private String description;
 	private List<String> reflist=new ArrayList<String>();
@@ -118,12 +114,8 @@ public class Tsyndset extends TbaseEntity {
 	public void setReferIds(List<String> referIds) {
 		this.referIds = referIds;
 	}
-	@ManyToMany(cascade=CascadeType.ALL)
-    @JoinTable(
-            name="tsyndset_tsyndmaster",
-            joinColumns=@JoinColumn(name="syndset_id"),
-            inverseJoinColumns=@JoinColumn(name="syndmaster_id")
-    )
+	
+	@ManyToMany(mappedBy="syndmajors")
 	public List<TsyndMaster> getSyndmasters() {
 		return syndmasters;
 	}
@@ -132,20 +124,6 @@ public class Tsyndset extends TbaseEntity {
 		this.syndmasters = syndmasters;
 	}
 
-	
-	@ManyToMany(cascade=CascadeType.ALL)
-    @JoinTable(
-            name="tsyndset_tsyndslave",
-            joinColumns=@JoinColumn(name="syndset_id"),
-            inverseJoinColumns=@JoinColumn(name="syndslave_id")
-    )
-	public List<TsyndSlave> getSyndslaves() {
-		return syndslaves;
-	}
-
-	public void setSyndslaves(List<TsyndSlave> syndslaves) {
-		this.syndslaves = syndslaves;
-	}
 
 	@Transient
 	public List<String> getMaybeList() {

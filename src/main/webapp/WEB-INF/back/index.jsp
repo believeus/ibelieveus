@@ -22,11 +22,11 @@
 				        </shiro:hasPermission>
 				         
 				         <shiro:hasPermission name="mediaDinamic:view">
-				         {"menuname":"[症状定义管理]","url":"/admin/syndset/list.jhtml"},
+				         {"menuname":"[症状定义管理]","url":"/admin/syndmajor/list.jhtml"},
 				        </shiro:hasPermission>
 				         
 				        <shiro:hasPermission name="bannar:view"> 
-						 {"menuname":"[辨病要点管理]","icon":"icon-users","url":"/admin/syndmaster/list.jhtml"}
+						 {"menuname":"[辨证要点管理]","icon":"icon-users","url":"/admin/syndmaster/list.jhtml"}
 						</shiro:hasPermission>
 					
 					]

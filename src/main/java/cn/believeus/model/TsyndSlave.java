@@ -10,17 +10,15 @@ import javax.persistence.Table;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
+/**从症／表症*/
 @Entity
 @Table
-public class Tsyndkey extends TbaseEntity{
+public class TsyndSlave extends TbaseEntity{
 	private static final long serialVersionUID = 2290022407519746709L;
 	private String synd;
 	private String code;
-	private String keypoint;
-	//脉象
-	private String  pulse;
 	private String description;
-	private List<Tsyndset> syndsetList=new ArrayList<Tsyndset>();
+	private List<Tsyndset> syndsets=new ArrayList<Tsyndset>();
 	public String getSynd() {
 		return synd;
 	}
@@ -34,38 +32,28 @@ public class Tsyndkey extends TbaseEntity{
 	public void setCode(String code) {
 		this.code = code;
 	}
-	public String getKeypoint() {
-		return keypoint;
-	}
-	public void setKeypoint(String keypoint) {
-		this.keypoint = keypoint;
-	}
 	
-	@ManyToMany(mappedBy="syndkeyList",cascade=CascadeType.ALL)
-	public List<Tsyndset> getSyndsetList() {
-		return syndsetList;
+	
+	@ManyToMany(mappedBy="syndslaves",cascade=CascadeType.ALL)
+	public List<Tsyndset> getSyndsets() {
+		return syndsets;
 	}
-	public void setSyndsetList(List<Tsyndset> syndsetList) {
-		this.syndsetList = syndsetList;
+	public void setSyndsets(List<Tsyndset> syndsets) {
+		this.syndsets = syndsets;
 	}
 	
 	
 	public String getDescription() {
 		return description;
 	}
+	
 	public void setDescription(String description) {
 		this.description = description;
 	}
 	@Override
 	public String toString() {
-		return "Tsyndkey [synd=" + synd + ", code=" + code + ", keypoint="
-				+ keypoint + "]";
+		return "TsyndSlave [synd=" + synd + ", code=" + code + "]";
 	}
-	public String getPulse() {
-		return pulse;
-	}
-	public void setPulse(String pulse) {
-		this.pulse = pulse;
-	}
+	
 	
 }

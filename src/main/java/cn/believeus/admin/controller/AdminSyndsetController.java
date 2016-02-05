@@ -20,7 +20,7 @@ import cn.believeus.PaginationUtil.Page;
 import cn.believeus.PaginationUtil.Pageable;
 import cn.believeus.PaginationUtil.PaginationUtil;
 import cn.believeus.model.Tsynd;
-import cn.believeus.model.Tsyndkey;
+import cn.believeus.model.TsyndMaster;
 import cn.believeus.model.Tsyndset;
 import cn.believeus.service.IService;
 import cn.believeus.service.MySQLService;
@@ -80,9 +80,9 @@ public class AdminSyndsetController {
 	public String save(Tsyndset syndset){
 		String maybesynd=syndset.getMaybesynd();
 		if(StringUtils.isNotEmpty(maybesynd)){
-			Tsyndkey syndkey=new Tsyndkey();
+			TsyndMaster syndkey=new TsyndMaster();
 			syndkey.setSynd(maybesynd);
-			syndset.getSyndkeyList().add(syndkey);
+			syndset.getSyndmasters().add(syndkey);
 		}
 		mysqlService.saveOrUpdate(syndset);
 		return "redirect:/admin/syndset/editView.jhtml?id="+syndset.getId();
@@ -170,12 +170,12 @@ public class AdminSyndsetController {
 		if(StringUtils.isNotEmpty(maybesynd)){
 			maybesynd=maybesynd.replaceAll(",", "");
 			String code=DigestUtils.md5Hex(maybesynd);
-			Tsyndkey syndkey=(Tsyndkey)mysqlService.findObject(Tsyndkey.class,"code", code);
+			TsyndMaster syndkey=(TsyndMaster)mysqlService.findObject(TsyndMaster.class,"code", code);
 			if(syndkey==null){
-				syndkey=new Tsyndkey();
+				syndkey=new TsyndMaster();
 				syndkey.setSynd(maybesynd);
 			}
-			syndset.getSyndkeyList().add(syndkey);
+			syndset.getSyndmasters().add(syndkey);
 			mysqlService.saveOrUpdate(syndset);
 		}
 		return "redirect:/admin/syndset/editView.jhtml?id="+syndset.getId();
@@ -184,9 +184,9 @@ public class AdminSyndsetController {
 	@RequestMapping("/admin/syndset/deletemaybesynd")
 	public @ResponseBody String deletemaybesynd(Integer syndsetId,Integer syndkeyId){
 		Tsyndset syndset=(Tsyndset)mysqlService.findObject(Tsyndset.class,syndsetId);
-		Tsyndkey syndkey=(Tsyndkey)mysqlService.findObject(Tsyndkey.class, syndkeyId);
-		syndset.getSyndkeyList().remove(syndkey);
-		syndkey.getSyndsetList().remove(syndset);
+		TsyndMaster syndkey=(TsyndMaster)mysqlService.findObject(TsyndMaster.class, syndkeyId);
+		syndset.getSyndmasters().remove(syndkey);
+		syndkey.getSyndsets().remove(syndset);
 		mysqlService.saveOrUpdate(syndset);
 		return "true";
 	}

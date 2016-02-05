@@ -37,8 +37,9 @@ public class Tsyndset extends TbaseEntity {
 	private String refer;
 	//可能的病证
 	private String  maybesynd;
-	private List<Tsyndkey> syndkeyList=new ArrayList<Tsyndkey>();
-	
+
+	private List<TsyndMaster> syndmasters=new ArrayList<TsyndMaster>();
+	private List<TsyndSlave> syndslaves=new ArrayList<TsyndSlave>();
 	// 病症描述
 	private String description;
 	private List<String> reflist=new ArrayList<String>();
@@ -119,16 +120,31 @@ public class Tsyndset extends TbaseEntity {
 	}
 	@ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(
-            name="tsyndset_tsyndkey",
+            name="tsyndset_tsyndmaster",
             joinColumns=@JoinColumn(name="syndset_id"),
-            inverseJoinColumns=@JoinColumn(name="syndkey_id")
+            inverseJoinColumns=@JoinColumn(name="syndmaster_id")
     )
-	public List<Tsyndkey> getSyndkeyList() {
-		return syndkeyList;
+	public List<TsyndMaster> getSyndmasters() {
+		return syndmasters;
 	}
 
-	public void setSyndkeyList(List<Tsyndkey> syndkeyList) {
-		this.syndkeyList = syndkeyList;
+	public void setSyndmasters(List<TsyndMaster> syndmasters) {
+		this.syndmasters = syndmasters;
+	}
+
+	
+	@ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(
+            name="tsyndset_tsyndslave",
+            joinColumns=@JoinColumn(name="syndset_id"),
+            inverseJoinColumns=@JoinColumn(name="syndslave_id")
+    )
+	public List<TsyndSlave> getSyndslaves() {
+		return syndslaves;
+	}
+
+	public void setSyndslaves(List<TsyndSlave> syndslaves) {
+		this.syndslaves = syndslaves;
 	}
 
 	@Transient

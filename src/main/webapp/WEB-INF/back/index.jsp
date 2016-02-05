@@ -26,7 +26,7 @@
 				        </shiro:hasPermission>
 				         
 				        <shiro:hasPermission name="bannar:view"> 
-						 {"menuname":"[辨病要点管理]","icon":"icon-users","url":"/admin/syndkey/list.jhtml"}
+						 {"menuname":"[辨病要点管理]","icon":"icon-users","url":"/admin/syndmaster/list.jhtml"}
 						</shiro:hasPermission>
 					
 					]

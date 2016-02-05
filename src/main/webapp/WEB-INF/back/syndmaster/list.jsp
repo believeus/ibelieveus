@@ -34,7 +34,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div>
 	<div>
 		<div class="bar">
-		<a href="/admin/syndkey/addView.jhtml" class="iconButton">
+		<a href="/admin/syndmaster/addView.jhtml" class="iconButton">
 				<span class="addIcon">&nbsp;</span>添加
 			</a>
 		<div class="buttonWrap">
@@ -55,32 +55,35 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<a href="javascript:;" class="sort" name="title">辩证要点</a>
 				</th>
 				<th>
+					<a href="javascript:;" class="sort" name="title">脉象</a>
+				</th>
+				<th>
 					<a href="javascript:;" class="sort" name="top">病证解释</a>
 				</th>
 				<th>
 					<a href="#"  class="sort">编辑</a>
 				</th>
 			</tr>
-			<c:forEach var="syndkey" items="${page.content}" varStatus="status">
+			<c:forEach var="syndmaster" items="${page.content}" varStatus="status">
 				<tr>
 					<td>
-						<input type="checkbox" name="ids" value="${syndkey.id}" />
+						<input type="checkbox" name="ids" value="${syndmaster.id}" />
 					</td>
 					<td>
-						${syndkey.synd}
+						${syndmaster.synd}
 					</td>
 					<td>
-						<c:forEach items="${syndkey.syndsetList}" var="syndset">
+						<c:forEach items="${syndmaster.syndsets}" var="syndset">
 							${syndset.synd}
 						</c:forEach>
-						
+					</td>
+					<td>${syndmaster.pulse}</td>
+					<td>
+						${syndmaster.description}
 					</td>
 					<td>
-						${syndkey.description}
-					</td>
-					<td>
-						<a href="/admin/syndkey/editView.jhtml?id=${syndkey.id}">[编辑]</a>
-						<a href="/admin/syndkey/deleteById.jhtml?id=${syndkey.id}">[删除]</a>
+						<a href="/admin/syndmaster/editView.jhtml?id=${syndmaster.id}">[编辑]</a>
+						<a href="/admin/syndmaster/deleteById.jhtml?id=${syndmaster.id}">[删除]</a>
 					</td>
 				</tr>
 			</c:forEach>

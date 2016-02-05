@@ -41,14 +41,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				var data="synd="+synd;
 				$.ajax({
 					type : "POST",
-					url : "/admin/syndkey/ajaxSynd.jhtml",
+					url : "/admin/syndmaster/ajaxSynd.jhtml",
 					data : data,
 					success : function(result) {
 						if(result!='false'){
-							 $.messager.confirm('系统提示', '该《证》已存在,为您跳转到编辑吗️?', function(r) {
+							 $.messager.confirm('系统提示', '该《证》已存在,为您跳转到编辑!', function(r) {
 
 				                    if (r) {
-				                    	window.location.href="/admin/syndkey/editView.jhtml?id="+result;
+				                    	window.location.href="/admin/syndmaster/editView.jhtml?id="+result;
+				                    }else{
+				                    	window.location.href="/admin/syndmaster/editView.jhtml?id="+result;
 				                    }
 				                });
 							
@@ -67,7 +69,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
      <div class="path">
 		<a href="/admin/manager.jhtml" target="_parent">内容管理</a> &raquo; 添加病证
 	</div>
-	<form id="inputForm" action="/admin/syndkey/save.jhtml" method="post" >
+	<form id="inputForm" action="/admin/syndmaster/save.jhtml" method="post" >
 		<table class="input">
 			<tr id="tr">
 				<th>
@@ -79,11 +81,42 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</tr>
 			<tr>
 				<th>辩证要点</th>
-				<td><input name="keypoint" class="text"/></td>
+				<td><input name="syndmaster" class="text"/></td>
 			</tr>
 			<tr>
 				<th>脉象</th>
-				<td><input name="pulse" class="text"/></td>
+				<td>
+					<select class="select" name="pulse">
+						 <option value=""></option>
+						 <option value="浮脉">浮 脉</option>
+						 <option value="沉脉">沉 脉</option>
+						 <option value="迟脉">迟 脉</option>
+						 <option value="数脉">数 脉</option>
+						 <option value="滑脉">滑 脉</option>
+						 <option value="涩脉">涩 脉</option>
+						 <option value="虚脉">虚 脉</option>
+						 <option value="实脉">实 脉</option>
+						 <option value="长脉">长 脉</option>
+						 <option value="短脉">短 脉</option>
+						 <option value="洪脉">洪 脉</option>
+						 <option value="微脉">微 脉</option>
+						 <option value="紧脉">紧 脉</option>
+						 <option value="缓脉">缓 脉</option>
+						 <option value="芤脉">芤 脉</option>
+						 <option value="弦脉">弦 脉</option>
+						 <option value="革脉">革 脉</option>
+						 <option value="牢脉">牢 脉</option>
+						 <option value="濡脉">濡 脉</option>
+						 <option value="弱脉">弱 脉</option>
+						 <option value="散脉">散 脉</option>
+						 <option value="细脉">细 脉</option>
+						 <option value="伏脉">伏 脉</option>
+						 <option value="动脉">动 脉</option>
+						 <option value="促脉">促 脉</option>
+						 <option value="结脉">结 脉</option>
+						 <option value="代脉">代 脉</option>
+					</select>
+				</td>
 			</tr>
 			<tr>
 				<th>

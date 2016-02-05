@@ -51,14 +51,14 @@ public class AdminSyndkeyController {
 		return modelView;
 	}
 	@RequestMapping("/admin/syndkey/save")
-	public String save(String synd,String keypoint){
+	public String save(String synd,String keypoint,String pulse){
 		String code=DigestUtils.md5Hex(synd.trim());
 		Tsyndkey syndkey=(Tsyndkey)mysqlService.findObject(Tsyndkey.class, "code", code);
 		if(syndkey==null){
 			syndkey=new Tsyndkey();
 			syndkey.setCode(code);
 			syndkey.setSynd(synd);
-			
+			syndkey.setPulse(pulse.trim());
 			Tsyndset syndset=new Tsyndset();
 			syndset.setCode(DigestUtils.md5Hex(keypoint.trim()));
 			syndset.setSynd(keypoint);
@@ -79,6 +79,18 @@ public class AdminSyndkeyController {
 		return "false";
 	}
 	
+	@RequestMapping("/admin/syndkey/updatePluse")
+	public @ResponseBody String updatePulse(Integer id,String pulse){
+		Tsyndkey syndkey=(Tsyndkey)mysqlService.findObject(Tsyndkey.class, id);
+		if(pulse!=null&&!"".equals(pulse)){
+			syndkey.setPulse(pulse.trim()+"脉");
+		}else{
+			syndkey.setPulse("");
+		}
+		mysqlService.saveOrUpdate(syndkey);
+		return "true";
+		
+	}
 	@RequestMapping("/admin/syndkey/editView")
 	public ModelAndView editView(Integer id){
 		ModelAndView modelView=new ModelAndView();

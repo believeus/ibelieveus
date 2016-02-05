@@ -17,6 +17,8 @@ public class Tsyndkey extends TbaseEntity{
 	private String synd;
 	private String code;
 	private String keypoint;
+	//脉象
+	private String  pulse;
 	private String description;
 	private List<Tsyndset> syndsetList=new ArrayList<Tsyndset>();
 	public String getSynd() {
@@ -59,6 +61,11 @@ public class Tsyndkey extends TbaseEntity{
 		return "Tsyndkey [synd=" + synd + ", code=" + code + ", keypoint="
 				+ keypoint + "]";
 	}
-	
+	public String getPulse() {
+		return pulse;
+	}
+	public void setPulse(String pulse) {
+		this.pulse = pulse;
+	}
 	
 }

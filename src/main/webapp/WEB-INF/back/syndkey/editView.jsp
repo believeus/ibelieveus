@@ -89,6 +89,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				$(obj).parent().find("span[id='msg']").text("必填");
 			}
 		};
+		this.updatePulse=function(obj){
+			var pulse=$(obj).parent().find("input[name='pulse']").val();
+			var syndkeyId=$("#syndkeyId").val();
+			var data="id="+syndkeyId+"&pulse="+pulse;
+			$.ajax({
+				type : "POST",
+				url : "/admin/syndkey/updatePluse.jhtml",
+				data : data,
+				success : function(result) {
+					if(result=='true'){
+						$(obj).parent().find("span[id='pulseMsg']").text("已更新");
+					}
+				}
+			}); 
+		};
 	};
 	</script>
   </head>
@@ -119,6 +134,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</td>
 				</tr>
 			</c:forEach>
+			<tr>
+				<th>脉象</th>
+				<td>
+					<input class="text" name="pulse" value="${syndkey.pulse}"/>
+					<input value='更新' onclick="new Tr().updatePulse(this)" style="margin-left:2px;" type="button" class="button"  />
+					<span id="pulseMsg"></span>
+				</td>
+				
+			</tr>
 			<tr>
 				<th>
 					病症解释:

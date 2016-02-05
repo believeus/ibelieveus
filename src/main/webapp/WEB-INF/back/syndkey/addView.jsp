@@ -82,8 +82,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<td><input name="keypoint" class="text"/></td>
 			</tr>
 			<tr>
+				<th>脉象</th>
+				<td><input name="pulse" class="text"/></td>
+			</tr>
+			<tr>
 				<th>
-					病症解释:
+					病症解释
 				</th>
 				<td>
 					<input type="text" name="description" class="text" style="width: 500px;" value=""/>

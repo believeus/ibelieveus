@@ -126,17 +126,7 @@ public class AdminSyndmajorController {
 	@RequestMapping("/admin/syndmajor/delete")
 	public String delete(Integer id){
 		TsyndMajor syndmajor = (TsyndMajor)mysqlService.findObject(TsyndMajor.class, id);
-		String refer=syndmajor.getRefer();
-		if(StringUtils.isNotEmpty(refer)){
-			for(String ref:refer.split("\\s")){
-				Matcher matcher = Pattern.compile("\\d+").matcher(ref);
-				while(matcher.find()){
-					Tsynd synd=(Tsynd)mysqlService.findObject(Tsynd.class, Integer.parseInt(matcher.group()));
-					synd.setSynd(synd.getSynd().replace(syndmajor.getSynd(), ""));
-					mysqlService.saveOrUpdate(synd);
-				}
-			}
-		}
+		
 		mysqlService.delete(syndmajor);
 		return "redirect:/admin/syndmajor/list.jhtml";
 	}

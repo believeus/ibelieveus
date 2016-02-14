@@ -102,41 +102,52 @@ public class AdminSyndmasterController {
 	}
 	
 	@RequestMapping("/admin/syndmaster/update")
-	public @ResponseBody String update(Integer id,String syndmaster){
+	public @ResponseBody String update(Integer id,String syndmajor,Integer majorid){
 		TsyndMaster master=(TsyndMaster)mysqlService.findObject(TsyndMaster.class, id);
-		String code=DigestUtils.md5Hex(syndmaster.trim());
-		for(TsyndMajor syndmajor:master.getSyndmajors()){
-			if(syndmajor.getCode().equals(code)){
+		String code=DigestUtils.md5Hex(syndmajor.trim());
+		for(TsyndMajor major:master.getSyndmajors()){
+			if(major.getCode().equals(code)){
 				return "false";
 			}
 		}
-		TsyndMajor syndmajor=new TsyndMajor();
-		syndmajor.setCode(code);
-		syndmajor.setSynd(syndmaster);
-		master.getSyndmajors().add(syndmajor);
+		//删除之前的major
+		if(majorid!=null){
+			TsyndMajor major=(TsyndMajor)mysqlService.findObject(TsyndMajor.class,majorid);
+			master.getSyndmajors().remove(major);
+			mysqlService.saveOrUpdate(master);
+			mysqlService.delete(major);
+		}
+		//添加新的major
+		TsyndMajor major=new TsyndMajor();
+		major.setCode(code);
+		major.setSynd(syndmajor);
+		master.getSyndmajors().add(major);
 		mysqlService.saveOrUpdate(master);
 		return "true";
 	}
 	
 	@RequestMapping("/admin/syndmaster/delete")
-	public @ResponseBody String delete(Integer id,String syndmaster){
+	public @ResponseBody String delete(Integer id,Integer majorid){
 		TsyndMaster master=(TsyndMaster)mysqlService.findObject(TsyndMaster.class, id);
-		String code=DigestUtils.md5Hex(syndmaster.trim());
-		for(TsyndMajor syndmajor:master.getSyndmajors()){
-			if(syndmajor.getCode().equals(code)){
-				master.getSyndmajors().remove(syndmajor);
-				mysqlService.saveOrUpdate(master);
-				mysqlService.delete(syndmajor);
-				return "true";
-			}
-		}
-		return "false";
+		TsyndMajor major=(TsyndMajor)mysqlService.findObject(TsyndMajor.class, majorid);
+		master.getSyndmajors().remove(major);
+		mysqlService.saveOrUpdate(master);
+		mysqlService.delete(major);
+		return "true";
 	}
+	
 	@RequestMapping("/admin/syndmaster/deleteById")
 	public String deleteById(Integer id){
 		mysqlService.delete(TsyndMaster.class, id);
 		return "redirect:/admin/syndmaster/list.jhtml";
 	}
 	
+	@RequestMapping("/admin/syndmaster/updatesyndname")
+	public @ResponseBody String updatesyndname(Integer id,String syndname){
+		TsyndMaster master=(TsyndMaster)mysqlService.findObject(TsyndMaster.class, id);
+		master.setSynd(syndname);
+		mysqlService.saveOrUpdate(master);
+		return "true";
+	}
 	
 }

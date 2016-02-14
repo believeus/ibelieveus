@@ -49,27 +49,49 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			}); 
 			
 		});
+		
+		$("input[name='synd']").blur(function(){
+			var syndmasterId=$("#syndmasterId").val();
+			var syndname=$(this).val();
+			if(syndname!=""){
+				var data="id="+syndmasterId+"&syndname="+syndname;
+				$.ajax({
+					type : "POST",
+					url : "/admin/syndmaster/updatesyndname.jhtml",
+					data : data,
+					success : function(result) {
+						if(result=='true'){
+							$(this).parent().find("span[id='msg']").text("更新成功");
+						}else{
+							$(this).parent().find("span[id='msg']").text("更新失败");
+						}
+					}
+				}); 
+			}
+		});
 	});
+	
  	var Tr=function(){
 		this.addmaster=function(obj){
 			var tr="<tr>"+
 					  "<th>主证</th>"+
 					  "<td>"+
 					  	"<input name='syndmaster' class='text'/>"+
-						"<input value='删除' onclick='new Tr().clearmaster(this)' style='margin-left:5px;' type='button' class='button'/>"+
-						"<input value='更新' type='button' class='button' onclick='new Tr().updatemaster(this)'/>"+
+					  	"<input type='hidden' name='hiddenmaster'/>"+
+						"<input value='删除' onclick='new Tr().clearmajor(this)' style='margin-left:5px;' type='button' class='button'/>"+
+						"<input value='更新' type='button' class='button' onclick='new Tr().updatemajor(this)'/>"+
 						"<span id='msg'></span>"+
 					  "</td>"+
 					"</tr>";
 			$("#tr").after(tr);
 		};
-		this.addslave=function(obj){
+		this.addminor=function(obj){
 			var tr="<tr>"+
 			  "<th>从症</th>"+
 			  "<td>"+
-			  	"<input name='syndslave' class='text'/>"+
-				"<input value='删除' onclick='new Tr().clearslave(this)' style='margin-left:5px;' type='button' class='button'/>"+
-				"<input value='更新' type='button' class='button' onclick='new Tr().updateslave(this)'/>"+
+			  	"<input name='syndminor' class='text'/>"+
+				"<input value='删除' onclick='new Tr().clearminor(this)' style='margin-left:5px;' type='button' class='button'/>"+
+				"<input value='更新' type='button' class='button' onclick='new Tr().updateminor(this)'/>"+
 				"<span id='msg'></span>"+
 			  "</td>"+
 			"</tr>";
@@ -77,18 +99,35 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		};
 		
 		
-		this.updateslave=function(obj){
-			
-		};
-		this.clearslave=function(obj){
-			$(obj).parent().find("span[id='msg']").text("");
+		this.updateminor=function(obj){
 			var syndmasterId=$("#syndmasterId").val();
-			var syndslave=$(obj).parent().find("input[name='syndslave']").val();
-			if(syndslave!=""){
-				var data="id="+syndmasterId+"&syndslave="+syndslave;
+			var syndminor=$(obj).parent().find("input[name='syndminor']").val();
+			if(syndminor!=""){
+				var data="id="+syndmasterId+"&syndminor="+syndminor;
 				$.ajax({
 					type : "POST",
-					url : "/admin/syndslave/delete.jhtml",
+					url : "/admin/syndminor/updateminor.jhtml",
+					data : data,
+					success : function(result) {
+						if(result=='true'){
+							$(obj).parent().find("span[id='msg']").text("更新成功");
+						}else{
+							$(obj).parent().find("span[id='msg']").text("更新失败");
+						}
+					}
+				}); 
+			}
+		};
+		
+		this.clearminor=function(obj){
+			$(obj).parent().find("span[id='msg']").text("");
+			var syndmasterId=$("#syndmasterId").val();
+			var syndminor=$(obj).parent().find("input[name='syndminor']").val();
+			if(syndminor!=""){
+				var data="id="+syndmasterId+"&syndminor="+syndminor;
+				$.ajax({
+					type : "POST",
+					url : "/admin/syndminor/delete.jhtml",
 					data : data,
 					success : function(result) {
 						if(result=='true'){
@@ -103,12 +142,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			}
 		};
 		
-		this.clearmaster=function(obj){
+		this.clearmajor=function(obj){
 			$(obj).parent().find("span[id='msg']").text("");
 			var syndmasterId=$("#syndmasterId").val();
-			var syndmaster=$(obj).parent().find("input[name='syndmaster']").val();
-			if(syndmaster!=""){
-				var data="id="+syndmasterId+"&syndmaster="+syndmaster;
+			var majorid=$(obj).parent().find("input[name='majorid']").val();
+			if(majorid!=""){
+				var data="id="+syndmasterId+"&majorid="+majorid;
 				$.ajax({
 					type : "POST",
 					url : "/admin/syndmaster/delete.jhtml",
@@ -125,12 +164,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				$(obj).parent().parent().remove();
 			}
 		};
-		this.updatemaster=function(obj){
+		this.updatemajor=function(obj){
 			$(obj).parent().find("span[id='msg']").text("");
 			var syndmasterId=$("#syndmasterId").val();
-			var syndmaster=$(obj).parent().find("input[name='syndmaster']").val();
-			if(syndmaster!=""){
-				var data="id="+syndmasterId+"&syndmaster="+syndmaster;
+			var syndmajor=$(obj).parent().find("input[name='syndmajor']").val();
+			var majorid=$(obj).parent().find("input[name='majorid']").val();
+			
+			if(syndmajor!=""){
+				var data="id="+syndmasterId+"&syndmajor="+syndmajor+"&majorid="+majorid;
 				$.ajax({
 					type : "POST",
 					url : "/admin/syndmaster/update.jhtml",
@@ -165,16 +206,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</th>
 				<td>
 					<input type="text" id="synd" class="text" name="synd" value="${syndmaster.synd }"/>
-					<input type="button" class="button" value="添加主证" onclick="new Tr().addmaster(this)"/>
+					<input type="button" class="button" value="添加主症状" onclick="new Tr().addmaster(this)"/>
+					<span id='msg'></span>
 				</td>
 			</tr>
 			<c:forEach items="${syndmaster.syndmajors }" var="syndmajor">
 				<tr>
 				<th>主证</th>
 				<td>
-					<input type="text" class="text" value="${syndmajor.synd }" name='syndmaster'/>
-					<input value='删除' onclick="new Tr().clearmaster(this)"  style="margin-left:2px;"  type="button" class="button"/>
-					<input value='更新' onclick="new Tr().update(this)" style="margin-left:-4px;" type="button" class="button"  />
+					<input type="text" class="text" value="${syndmajor.synd }" name='syndmajor'/>
+					<input value="${syndmajor.id}" type="hidden" name="majorid"/>
+					<input value='删除' onclick="new Tr().clearmajor(this)"  style="margin-left:2px;"  type="button" class="button"/>
+					<input value='更新' onclick="new Tr().updatemajor(this)" style="margin-left:-4px;" type="button" class="button"  />
 				</td>
 				</tr>
 			</c:forEach>
@@ -211,10 +254,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						 <option value="结脉">结 脉</option>
 						 <option value="代脉">代 脉</option>
 					</select>
-					<input type="button" class="button" value="添加从证" onclick="new Tr().addslave(this)"/>
+					<input type="button" class="button" value="添加从证" onclick="new Tr().addminor(this)"/>
 					<span id="pulseMsg"></span>
 				</td>
 			</tr>
+			<c:forEach items="${syndmaster.syndminors}" var="syndminor">
+				<tr>
+					<th>从症</th>
+					<td>
+						<input value="${syndminor.synd}" class="text" name="syndminor"/>
+						<input value="删除" onclick="new Tr().clearminor(this)" style="margin-left:2px;" type="button" class="button"/>
+						<input value="更新" type="button" class="button" style="margin-left: -5px;" onclick="new Tr().updateminor(this)"/>
+						<span id='msg'></span>
+					</td>
+				</tr>
+			
+			</c:forEach>
 			<tr>
 				<th>
 					病症解释:

@@ -18,17 +18,34 @@ public class AdminSyndminorController {
 	private IService mysqlService;
 	
 	@RequestMapping("/admin/syndminor/delete")
-	public @ResponseBody String deleteslave(Integer id,String syndminor){
+	public @ResponseBody String deleteminor(Integer id,String syndminor){
 		TsyndMaster syndmaster=(TsyndMaster)mysqlService.findObject(TsyndMaster.class, id);
 		String code=DigestUtils.md5Hex(syndminor);
 		for(TsyndMinor minor :syndmaster.getSyndminors()){
 			if(minor.getCode().equals(code)){
 				syndmaster.getSyndminors().remove(minor);
-				minor.getSyndmasters().remove(syndmaster);
-				mysqlService.delete(syndmaster);
+				mysqlService.saveOrUpdate(syndmaster);
+				mysqlService.delete(minor);
 				return "true";
 			}
 		}
 		return "false";
+	}
+	
+	@RequestMapping("/admin/syndminor/updateminor")
+	public @ResponseBody String updateminor(Integer id,String syndminor){
+		TsyndMaster syndmaster=(TsyndMaster)mysqlService.findObject(TsyndMaster.class, id);
+		String code=DigestUtils.md5Hex(syndminor);
+		for(TsyndMinor minor :syndmaster.getSyndminors()){
+			if(minor.getCode().equals(code)){
+				return "false";
+			}
+		}
+		TsyndMinor minor=new TsyndMinor();
+		minor.setCode(code);
+		minor.setSynd(syndminor);
+		syndmaster.getSyndminors().add(minor);
+		mysqlService.saveOrUpdate(syndmaster);
+		return "true";
 	}
 }

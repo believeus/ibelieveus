@@ -43,9 +43,9 @@ public class TsyndMaster extends TbaseEntity{
 	
 	@ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(
-            name="tsyndmaster_tsyndmajors",
+            name="tsyndmaster_tsyndmajor",
             joinColumns=@JoinColumn(name="syndmaster_id"),
-            inverseJoinColumns=@JoinColumn(name="syndmajors_id")
+            inverseJoinColumns=@JoinColumn(name="syndmajor_id")
     )
 	public List<TsyndMajor> getSyndmajors() {
 		return syndmajors;
@@ -56,9 +56,9 @@ public class TsyndMaster extends TbaseEntity{
 
 	@ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(
-            name="tsyndmaster_tsyndminors",
+            name="tsyndmaster_tsyndminor",
             joinColumns=@JoinColumn(name="syndmaster_id"),
-            inverseJoinColumns=@JoinColumn(name="syndminors_id")
+            inverseJoinColumns=@JoinColumn(name="syndminor_id")
     )
 	public List<TsyndMinor> getSyndminors() {
 		return syndminors;

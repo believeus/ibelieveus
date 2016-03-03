@@ -46,10 +46,7 @@
 		<mapping class="cn.believeus.model.Tauthority"/>
 		<mapping class="cn.believeus.model.Trole"/>
 		<mapping class="cn.believeus.model.Tuser"/>
-		<mapping class="cn.believeus.model.Tsynd"/>
-		<mapping class="cn.believeus.model.TsyndMajor"/>
-		<mapping class="cn.believeus.model.TsyndMaster"/>
-		<mapping class="cn.believeus.model.TsyndMinor"/>
+	
 	</session-factory>
 
 </hibernate-configuration>

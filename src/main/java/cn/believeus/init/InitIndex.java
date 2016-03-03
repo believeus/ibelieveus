@@ -18,18 +18,18 @@ public class InitIndex implements ApplicationListener<ApplicationEvent>{
 	private boolean isIndex=true;
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
-		if(event instanceof ContextRefreshedEvent){
-			if(isIndex==true){
-				try {
-					Session session = sessionFactory.openSession();
-					FullTextSession fullTextSession = Search.getFullTextSession(session);
-					fullTextSession.createIndexer().startAndWait();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			isIndex=false;
-		}
+//		if(event instanceof ContextRefreshedEvent){
+//			if(isIndex==true){
+//				try {
+//					Session session = sessionFactory.openSession();
+//					FullTextSession fullTextSession = Search.getFullTextSession(session);
+//					fullTextSession.createIndexer().startAndWait();
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			isIndex=false;
+//		}
 		
 	}
 

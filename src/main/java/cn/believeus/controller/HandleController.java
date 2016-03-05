@@ -1,46 +1,32 @@
 package cn.believeus.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.annotation.Resource;
-
 import net.sf.json.JSONObject;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import cn.believeus.model.Tcore;
-import cn.believeus.service.RedisService;
-import cn.believeus.variables.Variables;
+import cn.believeus.service.CacheService;
 
 @Controller
 public class HandleController {
 	@Resource
-	private RedisService redisService;
+	private CacheService redisService;
 
 	@RequestMapping(value = "/decore", produces = "application/json; charset=utf-8")
 	@ResponseBody
 	public String decore(String keyword) {
 		String data = null;
-		String value = redisService.getCacheValue(keyword,
-				Variables.DB_RELATIONSHIP);
+		String value = redisService.get(keyword,0);
 		if (value == null || "".equals(value)) {
 			return "over";
 		}
 		for (String key : value.split("\\|")) {
-			value = redisService.getCacheValue(key, Variables.DB_SYNDINFO);
+			value = redisService.get(key, 1);
 			if (value != null) {
-				@SuppressWarnings("rawtypes")
-				Map<String, Class> classMap = new HashMap<String, Class>();
-				classMap.put("cores", Tcore.class);
-				Tcore core = (Tcore) JSONObject.toBean(
-						JSONObject.fromObject(value), Tcore.class, classMap);
-				String flag = core.getKey();
-				String detail = core.getDetail();
-				data = (data == null) ? (flag + ":" + detail) : (data + "|"
-						+ flag + ":" + detail);
+				JSONObject jsonObject = JSONObject.fromObject(value);
+				String detail=jsonObject.getString("症状");
+				String id=jsonObject.getString("id");
+				data = (data == null) ? (id + ":" + detail) : (data + "|"+ id + ":" + detail);
 			}
 		}
 		return data;
@@ -49,13 +35,11 @@ public class HandleController {
 	@RequestMapping(value = "/getdetail", produces = "application/json; charset=utf-8")
 	@ResponseBody
 	public String getDetail(String keyword) {
-		String value = redisService.getCacheValue(keyword,Variables.DB_SYNDINFO);
-		Map<String, Class> classMap = new HashMap<String, Class>();
-		classMap.put("cores", Tcore.class);
-		Tcore core = (Tcore) JSONObject.toBean(JSONObject.fromObject(value),Tcore.class, classMap);
-		String definition = core.getDefinition();
-		String anagraph = core.getAnagraph();
-		String drugname = core.getDrugname();
+		String value = redisService.get(keyword,1);
+		JSONObject jsonObject = JSONObject.fromObject(value);
+		String definition = jsonObject.getString("证名");
+		String anagraph = jsonObject.getString("方剂");
+		String drugname = jsonObject.getString("组方");
 		return definition + ":" + drugname + ":" + anagraph;
 	}
 }

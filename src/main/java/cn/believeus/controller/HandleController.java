@@ -37,9 +37,10 @@ public class HandleController {
 	public String getDetail(String keyword) {
 		String value = redisService.get(keyword,1);
 		JSONObject jsonObject = JSONObject.fromObject(value);
-		String definition = jsonObject.getString("证名");
+		String position = jsonObject.getString("病位");
+		String property=jsonObject.getString("病性");
 		String anagraph = jsonObject.getString("方剂");
 		String drugname = jsonObject.getString("组方");
-		return definition + ":" + drugname + ":" + anagraph;
+		return position + ":" +property+":"+drugname + ":" + anagraph;
 	}
 }
